@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body>
+        <%- include('headerMenu') %>
+        <main class="content">
+            <div class="main">
+                <h1>My Portfolios</h1>
+                <% if (availablePortfolios.length > 0 ) { %>
+                <ul class="item-list">
+                    <% availablePortfolios.forEach(function(portfolio) { %>
+                        <li class="item">
+                            <div class="item-row">
+                                <div class="item-icon">
+                                    <i class="material-icons">pie_chart</i>
+                                </div>
+                                <div class="item-content">
+                                    <span class="item-name"><%= portfolio.name %> (#<%=portfolio.id%>)</span>
+                                </div>
+                                <div class="item-actions">
+                                    <form action="/funds/list" method="POST">
+                                        <input type="hidden" name="portfolio_id" value="<%=portfolio.id%>"> 
+                                        <input type="hidden" name="portfolio_name" value="<%=portfolio.name%>">   
+                                        <input type="hidden" name="_csrf" value="<%= crsfToken %>">                                      
+                                        <button type="submit" class="delete-btn"><i class="material-icons">edit</i></button>
+                                    </form>
+                                    <form action="/portfolios/remove" method="POST">
+                                        <input type="hidden" name="portfolio_id" value="<%=portfolio.id%>">
+                                        <input type="hidden" name="_csrf" value="<%= crsfToken %>"> 
+                                        <button type="submit" class="delete-btn"><i class="material-icons">delete</i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                    <% }) %>
+                </ul>
+                <% } else { %>
+                <p>Looks like you don't have any portfolios, click on the plus at the bottom to add one...</p>
+                <% } %>
+                <a href="add" class="fab" id="fab-add">
+                    <i class="material-icons">add</i>
+                </a>              
+            </div>
+        </main>
+        <%- include('footerMenu') %>
+    </body>
+</html>

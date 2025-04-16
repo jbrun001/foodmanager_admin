@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body>
+        <%- include('headerMenu') %>
+        <main class="content">
+            <div class="form-container">
+                <h1>Register for <%=appData.appName%></h1>
+                <form id="registerForm" method="POST" action="/users/registered">
+                    <div class="input-field <%= messages.some(error => error.field === 'email') ? 'error-field' : '' %>">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="<%= previousData.email || '' %>" maxlength="60" required>
+                    </div>
+                    <div class="input-field <%= messages.some(error => error.field === 'password') ? 'error-field' : '' %>">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" value="<%= previousData.password || '' %>" maxlength="20" required>
+                    </div>
+                    <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+                    <button type="submit" class="submit-button">Register</button>
+                    <% if (messages.length > 0) { %>
+                    <ul>
+                        <% messages.forEach(function(error) { %>
+                            <li><%= error.message %></li>
+                        <% }); %>
+                    </ul>
+                    <% } %>
+                </form>
+            </div>
+        </main>
+        <%- include('footerMenu') %>
+    </body>
+</html>

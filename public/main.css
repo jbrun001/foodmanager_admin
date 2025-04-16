@@ -1,0 +1,457 @@
+/* added variables for key elements so can easily change and see what looks better */
+:root {
+    --menu-width: 175px;
+    --menu-collapsed-width: 70px;
+    --header-height: 60px;
+    --background-colour: #007bff;
+    --background-colour-hover: #0056b3;
+    --item-hover: #e0e0e0;
+    --error-border: red;
+    --error-background: #ffe6e6 
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;                                          /* 100% of the view port height */
+    overflow: hidden;                                       /* stops scrolling into header */
+}
+
+/* menu */
+.menu {
+    width: var(--menu-width);
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto; 
+    transition: width 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.menu.collapsed {
+    width: var(--menu-collapsed-width);                     /* size of menu when collapsed */
+}
+
+/* menu drawer icon */
+.menu-drawer {
+    background-color: var(--background-colour);
+    color: white;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    position: sticky;                                       /* keep at top of page */
+    top: 0;                                                 /* attach to parent container top */
+    z-index: 10;
+}
+
+.menu-drawer:hover {
+    background-color: var(--background-colour-hover);
+}
+
+.menu-drawer i {
+    font-size: 24px;
+}
+
+/* items in the menu */
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.menu-item i {
+    margin-right: 10px;
+    transition: margin-right 0.3s;
+}
+
+.menu.collapsed .menu-item i {
+    margin-right: 0;                                        /* remove margin when collapsed to save space */
+}
+
+.menu.collapsed .menu-item span {
+    display: none;                                          /* don't show the text when collaped - so just the icon shows */
+}
+
+.menu-item:hover {
+    background-color: var(--item-hover);
+}
+
+.menu-link {
+    display: flex;
+    align-items: center; 
+    text-decoration: none; 
+    color: inherit; 
+}
+
+/* top of page header for info and logged in user details */
+.header {
+    background-color: var(--background-colour);
+    color: white;
+    height: var(--header-height);
+    line-height: var(--header-height);
+    padding: 0 1%;                        
+    position: fixed;
+    top: 0;
+    left: var(--menu-width);                                /* start right of the  menu */
+    width: calc(100% - var(--menu-width));                  /* fit next to the menu */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s, width 0.3s;
+    overflow: visible;
+}
+
+.header-title {
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    flex-shrink: 1;                                         /* title can grow or shrink */
+    max-width: 60%;                                         /* only take max 60% to leave room for user info */
+    overflow: hidden;
+    white-space: nowrap;                                    /* don't wrap the title so it all stay in one line */
+}
+
+.user-info {
+    font-size: 1rem;
+    flex-shrink: 0;                                         /* stop the user info container shrinking */ 
+    white-space: nowrap;                                    /* don't wrap */
+    margin-left: auto;                                      /* make sure it's on the right */
+    padding-right: 2%;     
+    align-items: center;
+}
+
+/* style the user logged in icon so it's aligned centre*/
+.user-info .material-icons {
+    font-size: 1.5rem; 
+    margin-right: 8px; 
+    vertical-align: middle; /* Ensure alignment with text */
+    color: white; 
+}
+
+.menu.collapsed + .header {                                 /* + = only applies to header when the previous element is .menu_collapsed */
+    left: var(--menu-collapsed-width);                      /* header is bigger when menu is collapsed */
+    width: calc(100% - var(--menu-collapsed-width));
+}
+
+/* Content Area */
+.content {
+    position: absolute;
+    top: var(--header-height);                              /* content starts under the header */
+    left: var(--menu-width);                    
+    width: calc(100% - var(--menu-width));      
+    height: calc(100% - var(--header-height));     
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #f9f9f9;                           /* content background slightly grey so items show as different */
+    transition: left 0.3s, width 0.3s;
+}
+
+.menu.collapsed + .header + .content {
+    left: var(--menu-collapsed-width);                    
+    width: calc(100% - var(--menu-collapsed-width));
+}
+.form-container {
+    background: #ffffff;
+    padding: 24px;
+    min-width: 100px;
+    max-width: 75%;
+}
+
+.form-container h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: #333;
+}
+.input-field {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.input-field input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 95%;
+    padding: 12px;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+.input-field input:focus {
+    outline: none;
+    border-color: var(--background-colour);
+}
+.input-field label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    display: block;
+    width: 95%;
+}
+.submit-button {
+    background-color: var(--background-colour);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.select-field {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.select-field select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 16px;
+    transition: all 0.3s;
+    width: 95%;
+    background-color: #fff;
+    appearance: none;                                       /* remove default browser styling */
+}
+
+.select-field select:focus {
+    outline: none;
+    border-color: var(--background-colour);
+}
+
+.select-field label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    display: block;
+    width: 100%;
+}
+
+/* styles for list of portfolios/funds/transactions to be used in the xxxList ejs's */
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+/* item list used in portfoliosList, fundsList, fundsSearchResults */
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 97%;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;                                 /* stack rows (item and item-details vertically */
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+}
+
+.item-details-row {
+    display: none;                                          /* hidden to start with */
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    border-radius: 0 0 5px 5px; 
+}
+
+/* this class is applied using hte javascript in the page */
+.item-details-row.active {
+    display: flex;                                          /* display when active */
+    flex-direction: column;
+}
+
+.item-details-row .details-content {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.item-details-row p {
+    margin: 5px 0;
+}
+
+.item:hover {
+    background-color: var(--item-hover);
+}
+
+.item-icon {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: var(--background-colour);--background-colour:
+    margin-right: 15px;
+}
+
+.item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.item-actions {
+    display: flex;
+    justify-content: flex-end;                              /* make sure buttons are on the right */
+    gap: 10px;
+}
+
+.item-name {
+    display: block;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.item-value {
+    display: block;
+    font-size: 0.9rem;
+    color: gray;
+}
+
+/* floating action button - add for add a new portfolio */
+.fab {
+    position: fixed;
+    bottom: max(10px, env(safe-area-inset-bottom) + 20px);
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background-color: var(--background-colour);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    z-index: 1000;
+}
+
+.fab i {
+    font-size: 24px;
+}
+
+/* styling for form fields that have validation errors */
+.error-field input, .error-field select {
+    border: 2px solid var(--error-border);
+    background-color: var(--error-background);
+}
+
+/* this contains the filter on search pages, the fields are on the first row, any errors appear underneath */
+.filter-container {
+    background: white;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;                                 /* form first then errors */
+    gap: 8px;                                               /* vertical gap between the form and errors */
+    width: 95%;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);           /* shadow for the container */ 
+    border-radius: 8px;                                     /* rounded corners */
+    position: sticky;                                       /* stop the filter from moving when scrolling */
+    top: 0;                                                 /* fix the filter to the top of the content div */
+    z-index: 1000;                                          /* bring to top */
+}
+
+.filter-container form {
+    display: flex;
+    flex-direction: row;                                    /* all search fields in one row */
+    align-items: center;                                    /* vertically center fields */
+    gap: 16px;                                              /* gap between fields */
+    flex-wrap: nowrap;                                      /* stop wrapping - need to check on screensizes if add more search fields */
+    overflow-x: auto;                                       /* allow horizontal scrolling - check screensizes again */
+    width: 100%;
+}
+
+.filter-container .filter-field {
+    flex: 1;                                                /* Allow fields to grow and shrink evenly */
+    min-width: 150px;                                       /* stopt fields shrinking too much */
+}
+
+.filter-container .filter-field label {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.filter-container .filter-field input,
+.filter-container .filter-field select {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.filter-container .filter-field input:focus,
+.filter-container .filter-field select:focus {
+    outline: none;
+    border-color: var(--background-colour);
+}
+
+
+/* errors are formatted as ul in the filter-container */
+.filter-container ul {
+    list-style: none;                                       /* remove bullet points */
+    padding: 0;
+    margin: 0;
+    margin-top: 8px;                                        /* space between form and any error messages */
+    font-size: 14px;
+}
+
+/* formatting for all buttons and button hovering in one place */
+.delete-btn, .add-btn, .search-btn, .details-btn, .filter-container .search-btn {
+    background-color: var(--background-colour);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 20px;
+    display: block;
+    text-align: center;
+    text-decoration: none;                                  /* remove underline if it's a link */
+}
+
+.delete-btn:hover, .add-btn:hover, .search-btn:hover, .submit-button:hover, .fab:hover, .filter-container .search-btn:hover {
+    background-color: var(--background-colour-hover);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (max-width: 768px) {          /* for mobile screens smaller than 768px */
+    .content {
+        left: 0;                                /* remove left offset (menu width) */
+        width: 100%;                            /* use full width for content */
+        top: var(--header-height);              /* keep starting under the header */
+        padding: 15px;                          /* adjust padding for smaller screens */
+    }
+}

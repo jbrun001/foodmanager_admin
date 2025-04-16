@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body>
+        <%- include('headerMenu') %>
+        <main class="content">
+            <div class="form-container">
+                <h1>Create a new portfolio</h1>
+                <form id="portfolioAddForm" method="POST" action="/portfolios/added">
+                    <div class="input-field <%= messages.some(error => error.field === 'name') ? 'error-field' : '' %>">
+                        <label for="name">Portfolio Name</label>
+                        <input type="text" id="name"  value="<%= previousData.name || '' %>" name="name" maxlength="100" required>
+                        <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+                    </div>
+                    <button type="submit" class="submit-button">Create</button>
+                    <% if (messages.length > 0) { %>
+                        <ul>
+                        <% messages.forEach(function(error) { %>
+                        <li><%= error.message %></li>
+                        <% }); %>
+                      </ul>
+                    <% } %>
+                </form>
+            </div>
+        </main>
+        <%- include('footerMenu') %>
+    </body>
+</html>
+

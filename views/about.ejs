@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body>
+        <%- include('headerMenu') %>
+        <main class="content">
+            <h1>About <%=appData.appName%></h1>
+            <p>Fund Tracker was developed by Jake Brunnen.</p>
+            <p>It was developed to provide portfolio tracking functionality but also to</p>
+            <ul>
+                <li>practice how to implement secure web applications</li>
+                <li>practice how to provide APIs that are easy to understand and use</li>
+                <li>get some experience with material design concepts</li>
+                <li>write some more complex SQL and</li>
+                <li>practice how to consume API's - especially ones with strict API use limits</li>
+            </ul>
+            <p><a href="https://github.com/jbrun001/APIProject">https://github.com/jbrun001/APIProject</a></p>
+            <p><a href="https://jbrun001.github.io/allprojects.html">My portfolio</a></p>
+          </main>
+        <%- include('footerMenu') %>
+    </body>
+</html>

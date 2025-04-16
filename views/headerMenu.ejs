@@ -1,0 +1,50 @@
+<!-- menu -->
+<aside class="menu" id="menu">
+    <div class="menu-drawer" id="menu-drawer">
+        <i class="material-icons">menu</i>
+    </div>
+    <div class="menu-item">
+        <a href="/" class="menu-link"><i class="material-icons">dashboard</i><span>Dashboard</span></a>
+    </div>    
+    <div class="menu-item">
+        <a href="/portfolios/list" class="menu-link"><i class="material-icons">insert_chart</i><span>My Portfolios</span></a>
+    </div>
+    <div class="menu-item">
+        <a href="/funds/search-result" class="menu-link"><i class="material-icons">search</i><span>Find Funds</span></a>
+    </div>
+    <div class="menu-item">
+        <a href="/transactions/list" class="menu-link"><i class="material-icons">swap_horiz</i><span>Transactions</span></a>
+    </div>
+    <div class="menu-item">
+        <a href="/prices/update" class="menu-link"><i class="material-icons">cloud_download</i><span>Update prices</span></a>
+    </div>
+    <div class="menu-item">
+        <a href="/about" class="menu-link"><i class="material-icons">help</i><span>About</span></a>
+    </div>
+    <% if (loggedInStatus === 'not logged in') { %>
+    <div class="menu-item">
+        <a href="/users/register" class="menu-link"><i class="material-icons">app_registration</i><span>Register</span></a>
+    </div>
+    <div class="menu-item">
+        <a href="/users/login" class="menu-link"><i class="material-icons">login</i><span>Login</span></a>
+    </div>
+    <% }else {  %>
+    <div class="menu-item">
+        <a href="/users/logout" class="menu-link"><i class="material-icons">logout</i><span>Logout</span></a>
+    </div>
+    <% } %>
+</aside>
+
+
+
+<!-- header that stays at the top of the page -->
+<header class="header">
+    <div class="header-title">Fund Tracker</div>
+    <div class="user-info">
+        <% if (loggedInStatus === 'not logged in') { %>
+            not logged in
+        <% } else { %>
+        <i class="material-icons">account_circle</i><span><%= loggedInStatus %></span>
+        <% } %>
+    </div>
+</header>
