@@ -7,19 +7,7 @@
         <a href="/" class="menu-link"><i class="material-icons">dashboard</i><span>Dashboard</span></a>
     </div>    
     <div class="menu-item">
-        <a href="/portfolios/list" class="menu-link"><i class="material-icons">insert_chart</i><span>My Portfolios</span></a>
-    </div>
-    <div class="menu-item">
-        <a href="/funds/search-result" class="menu-link"><i class="material-icons">search</i><span>Find Funds</span></a>
-    </div>
-    <div class="menu-item">
-        <a href="/transactions/list" class="menu-link"><i class="material-icons">swap_horiz</i><span>Transactions</span></a>
-    </div>
-    <div class="menu-item">
-        <a href="/prices/update" class="menu-link"><i class="material-icons">cloud_download</i><span>Update prices</span></a>
-    </div>
-    <div class="menu-item">
-        <a href="/about" class="menu-link"><i class="material-icons">help</i><span>About</span></a>
+        <a href="/ingredients/review-moqs" class="menu-link"><i class="material-icons">insert_chart</i><span>Review MOQs</span></a>
     </div>
     <% if (loggedInStatus === 'not logged in') { %>
     <div class="menu-item">
@@ -39,7 +27,7 @@
 
 <!-- header that stays at the top of the page -->
 <header class="header">
-    <div class="header-title">Fund Tracker</div>
+    <div class="header-title">Food Manager Admin App</div>
     <div class="user-info">
         <% if (loggedInStatus === 'not logged in') { %>
             not logged in

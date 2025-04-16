@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body><%- include('headerMenu') %>
+
+<div class="content">
+    <h2>Search for <%= ingredientName %> - <a 
+        href="https://www.tesco.com/groceries/en-GB/search?&inputType=free+text&query=<%= encodeURIComponent(ingredientName) %>" 
+        target="_blank">
+        Tesco Product Search Link
+    </a></h2>
+
+    <div class="form-container">
+      <h1><%= ingredientName %></h1>
+      <form method="POST">
+        <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+  
+        <div class="input-field">
+          <label>Store</label>
+          <input name="storeName" value="<%= moq.storeName %>" required>
+        </div>
+  
+        <div class="input-field">
+          <label>Amount</label>
+          <input name="amount" value="<%= moq.amount %>" required>
+        </div>
+  
+        <div class="input-field">
+          <label>Units</label>
+          <input name="units" value="<%= moq.units %>">
+        </div>
+  
+        <div class="input-field">
+          <label>URL</label>
+          <input name="URL" value="<%= moq.URL %>">
+        </div>
+  
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="/ingredients/review-moqs" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+  </div>
+<%- include('footerMenu') %>
+</body>
+</html>

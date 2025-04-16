@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body><%- include('headerMenu') %>
+
+      <div class="content">
+        <h1>Review Ingredients with Missing MOQ URLs</h1>
+      
+        <div style="overflow-x:auto;">
+          <table class="table table-striped" style="min-width: 600px; width: 100%;">
+            <thead>
+              <tr>
+                <th>Ingredient</th>
+                <th>Store</th>
+                <th>Amount</th>
+                <th>Units</th>
+                <th>URL</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% ingredients.forEach(item => { %>
+                <tr>
+                  <td><%= item.ingredientName %></td>
+                  <td><%= item.storeName %></td>
+                  <td><%= item.amount %></td>
+                  <td><%= item.units %></td>
+                  <td>
+                    <% if (!item.URL || item.URL.trim() === '') { %>
+                      <span class="text-danger">[missing]</span>
+                    <% } else { %>
+                      <%= item.URL %>
+                    <% } %>
+                  </td>
+                  <td>
+                    <td>
+                      <a 
+                        href="/ingredients/edit-moq/<%= item.ingredientId %>/<%= item.moqIndex %>" 
+                        class="btn btn-sm btn-primary edit-link">
+                        Edit
+                      </a>
+                    </td>
+                    
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+<%- include('footerMenu') %>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const links = document.querySelectorAll('.edit-link');
+
+    links.forEach(link => {
+      link.addEventListener('click', function (e) {
+        const row = this.closest('tr');
+        row.style.backgroundColor = '#d4edda'; // Bootstrap greenish "success" color
+      });
+    });
+  });
+</script>
+</body>
+</html>

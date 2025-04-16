@@ -5,8 +5,8 @@ var validator = require ('express-validator');
 const expressSanitizer = require('express-sanitizer');
 const {ORIGIN_URL} = require('./helpers/getOriginURL');
 var ejs = require('ejs')
-var mysql = require('mysql2')
 const csrf = require('csurf');                                // middleware for CSRF tokens
+
 
 // Import dotenv so we can store secrets out of view of github
 // and we can have different settings for production and development
@@ -51,78 +51,36 @@ app.use(session({
     }
 }))
 
+
+// TEsting only
+app.use((req, res, next) => {
+    if (process.env.NODE_ENV !== 'production') {
+      req.session.userId = 'dev-user-id';
+      req.session.userEmail = 'dev@example.com';
+      req.session.userType = 'admin';
+    }
+    next();
+});
+
 console.log(`Domain: ${cookieDomain} Path: ${cookiePath}`)
 // Security.  Disable this http header to make it harder for attackers to know what technology is being used
 app.disable('x-powered-by')   
 
-// Define the database connection
-// the .env file has these settings - so they are not stored in the source on github
-let db;
-db = mysql.createConnection ({
-    host: process.env.LOCAL_HOST,
-    user: process.env.LOCAL_USER,
-    password: process.env.LOCAL_PASSWORD,
-    database: process.env.LOCAL_DATABASE
-});
-console.log("Using Database. Host: " +process.env.LOCAL_HOST + ",  Database: " + process.env.LOCAL_DATABASE);
+const firebase = require('./firebaseAdmin');
+global.db = firebase;
 
-global.db = db
-// reconnection logic with retry in case connection is lost because of inactivity
-// this listens for any errors from db and reconnects if there are any
-// references:  https://github.com/mysqljs/mysql/issues/375, 
-//              https://codingtechroom.com/question/troubleshooting-mysql-auto-reconnect-issues-in-node-js-applications
-const disconnect_retries = 6                            // how many attempts to reconnect after a disconnection is detected
-const disconnect_retry_delay = 3000                     // how many ms to wait before trying to re-connect
+// testing
+firebase.collection('Ingredients').limit(1).get()
+  .then(snapshot => {
+    console.log(`[Firestore] Connected. Found ${snapshot.size} ingredients`);
+  })
+  .catch(err => {
+    console.error('[Firestore] Connection failed:', err);
+  });
 
-function handleDisconnect(db) {
-    let state = {retries: disconnect_retries}            
-    db.on('error', function (err) {                     // listen for errors on the db
-        console.error('Database error:', err)
-        // check for all disconnection type codes plus error text (windows: 'The client was disconnected')
-        // This differs based on platform and versions of node, mysql
-        if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.message.toLowerCase().includes("lost") || err.message.toLowerCase().includes("closed") || err.message.toLowerCase().includes('the client was disconnected')) {
-            if (state.retries > 0) {
-                console.log(`Reconnecting... Attempts left: ${state.retries}`)
-                db.destroy()
-                const newConnection = mysql.createConnection(db.config)
-                handleDisconnect(newConnection)                          // recursively call listening to the new connection, exit condition is no error
-                global.db = newConnection                                // assingn new connection to global.db so no change to route code
-                // manage connect retries
-                setTimeout(() => {
-                    newConnection.connect((err) => {
-                        if (err) {
-                            console.error('Reconnection failed:', err)
-                            state.retries--
-                        } else {
-                            console.log('Reconnected to database.')
-                            state.retries = disconnect_retries                // we have reconnected so re-set this so next time we get the same number of reconnection tries 
-                        }
-                    })
-                }, disconnect_retry_delay)
-            } else {
-                console.error('Max reconnection attempts reached.')
-                throw err
-            }
-        } else {
-            throw err
-        }
-    })
-}
-
-// initial connection to the database
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err)
-        throw err
-    }
-    console.log('Connected to database.')
-});
-
-// listen for errors from db on the initial connection
-handleDisconnect(db)
 
 // Define our application-specific data
-app.locals.appData = {appName: "Fund Tracker"}
+app.locals.appData = {appName: "Food Manager Admin"}
 
 // CSRF protection middleware
 const csrfProtection = csrf({ cookie: false });                         // use a session-based token 
@@ -131,88 +89,13 @@ const csrfProtection = csrf({ cookie: false });                         // use a
 const mainRoutes = require("./routes/main")
 app.use('/', mainRoutes)                                                
 
+const ingredientsRoutes = require('./routes/ingredients');
+app.use('/ingredients', csrfProtection, ingredientsRoutes);
+
 // Load the route handlers for /users
 const usersRoutes = require('./routes/users')
 app.use('/users', csrfProtection, usersRoutes)
 
-// Load the route handlers for /portfolios
-const portfoliosRoutes = require('./routes/portfolios')
-app.use('/portfolios', csrfProtection, portfoliosRoutes)
-
-// Load the route handlers for /transactions
-const transactionsRoutes = require('./routes/transactions')
-app.use('/transactions', csrfProtection, transactionsRoutes)
-
-// Load the route handlers for /funds
-const fundsRoutes = require('./routes/funds')
-app.use('/funds',csrfProtection, fundsRoutes)
-
-// Load the route handlers for /prices
-const pricesRoutes = require('./routes/prices')
-app.use('/prices', pricesRoutes)
-
-// Load the route handlers for /prices
-const apiRoutes = require('./routes/api')
-app.use('/api', apiRoutes)
-
-// security. if the user is posting a form that has a cross site request forgery
-// token in it and that is not valid (session has expired / they are using a page
-// that has been loaded a long time ago / they are attempting a cross site request
-// forgery) there is an error that is generated (and the post fails)
-// so catch this error if it happens, and re-direct the user to the login page
-// which will be the correct next action. If this is not here a 500 error would be 
-// produced.
-// left this custom error page implemented here to demonstrate CSRF invalid tokens being handled 
-app.use((err, req, res, next) => {
-  if (err.code === 'EBADCSRFTOKEN') {
-      res.status(403).send(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">        
-                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined">                <title>Expired CSRF</title>
-                <script>
-                    let countdown = 2;                              // starting countdown timer value
-                    function updateCountdown() {
-                        const countdownElement = document.getElementById('countdown');
-                        countdownElement.textContent = countdown;
-                        if (countdown <= 0) {
-                            window.location.href = '` + ORIGIN_URL + `/users/login';  // redirect to login page
-                        } else {
-                            countdown--;
-                            setTimeout(updateCountdown, 1000);      // update every second
-                        }
-                    }
-                    window.onload = updateCountdown;                // start countdown on page load
-                </script>
-            </head>
-            <body>
-                <h1><span class="material-symbols-outlined">error</span> Invalid CSRF token</h1>
-                <p>The CSRF token has expired.</p>
-                <p>Redirecting to the login page in <span id="countdown">2</span> seconds...</p>
-                <p>If you are not redirected, <a href="/users/login">click here</a>.</p>
-            </body>
-            </html>
-        `);
-      } else {
-      next(err); 
-  }
-});
-
-// security. custom 404 so default will not give away we are using express
-app.use((req, res, next) => {
-  res.status(404).send("That resouce cannot be found")
-})
-
-// security. custom error so default will not give away we are using express
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-//  res.status(500).send('An error has occured\n' + err.code + '\n' + err.stack + '\n' + err.message + '\n')
-  res.status(500).send('An error has occured')
-
-})
 
 // Start the web app listening
 app.listen(port, () => console.log(`Node app listening on port ${port}!`))
