@@ -1,8 +1,7 @@
-# README for Fund Tracker
-This is the readme containing installation instructions for the Fund Tracker App.
+# README for food manager admin
+This is the readme containing installation instructions 
 
 # Initial Installation
-
 These installation instructions are for deployment to a linux environment.
 
 ## Install process 
@@ -10,8 +9,6 @@ These installation instructions are for deployment to a linux environment.
 ### node and modules
 
 `sudo apt-get update`
-
-`sudo apt install mysql-server`
 
 `sudo apt install nodejs`
 
@@ -33,9 +30,9 @@ disconnect and log back in
 
 `cd project`
 
-`git clone https://github.com/jbrun001/APIProject`
+`git clone https://github.com/jbrun001/foodmanager_admin`
 
-`cd APIProject`
+`cd foodmanager_admin`
 
 `npm init`
 
@@ -57,7 +54,7 @@ use nano to create .env file (contains security details so not synced with git) 
 
 `# this is the name of the database for the app - don't change this`
 
-`LOCAL_DATABASE=portfolio`
+`LOCAL_DATABASE=`
 
 `# this should be true if your system is live on a web server`
 
@@ -76,21 +73,8 @@ the / at the end`
 
 `PRODUCTION_URL=https://doc.gold.ac.uk/usr/199`
 
-`# this is your alphavantage API key`
 
-`API_KEY_ALPHAVANTAGE=`
-
-### MySQL
-
-`sudo mysql`
-
-`mysql> source ./SQLScripts/create_db_001.sql`
-
-`mysql> source ./SQLScripts/insert_db_001.sql`
-
-`mysql> quit`
-
-`npm install dotenv mysql2 express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf`
+`npm install dotenv firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf`
 
 ### forever
 
