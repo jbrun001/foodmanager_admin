@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    
+<%- include('headerMenu') %>
+
+<div class="content">
+  <h1>Ingredient Generation Results</h1>
+
+  <% if (results.length === 0) { %>
+    <p>No ingredients were processed.</p>
+  <% } else { %>
+    <ul>
+      <% results.forEach(result => { %>
+        <li>
+          <% if (result.status === 'created') { %>
+            <span style="color: green;"><%= result.message %></span>
+          <% } else if (result.status === 'updated') { %>
+            <span style="color: orange;"><%= result.message %></span>
+          <% } else { %>
+            <span style="color: gray;"><%= result.message %></span>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <a href="/ingredients/review-moqs" class="btn btn-primary">Review Ingredients</a>
+</div>
+
+<%- include('footerMenu') %>
+
+
+</body>
+</html>

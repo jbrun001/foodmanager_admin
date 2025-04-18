@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+<%- include('headerMenu') %>
+
+<div class="content">
+  <h1>Fix Recipe Thumbnails & Images</h1>
+
+  <% if (affected.length === 0) { %>
+    <p>🎉 No recipes need updating!</p>
+  <% } else { %>
+    <% affected.forEach(recipe => { %>
+      <div class="item">
+        <div class="item-row">
+          <div class="item-content">
+            <strong><%= recipe.title %></strong>
+            <p>Thumbnail: <%= recipe.thumbnail || '[empty]' %></p>
+            <p>Image: <%= recipe.image || '[empty]' %></p>
+          </div>
+        </div>
+        <div class="item-details-row active">
+          <form method="POST" action="/recipes/fixThumbnails/<%= recipe.id %>">
+            <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+            <div class="input-field">
+              <label>New Thumbnail URL</label>
+              <input name="thumbnail" class="form-control" value="<%= recipe.thumbnail %>" />
+            </div>
+            <div class="input-field">
+              <label>New Image URL</label>
+              <input name="image" class="form-control" value="<%= recipe.image %>" />
+            </div>
+            <button class="submit-button">Update</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+<%- include('footerMenu') %>
+</body>
+</head>

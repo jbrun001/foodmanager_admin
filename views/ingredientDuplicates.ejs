@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+
+    <%- include('headerMenu') %>
+
+    <div class="content">
+      <h1>Review Possible Duplicate Ingredients</h1>
+    
+      <% if (duplicates.length === 0) { %>
+        <p>No duplicates found. 🎉</p>
+      <% } else { %>
+        <% duplicates.forEach(pair => { %>
+          <div class="item">
+            <div class="item-row">
+              <div class="item-content">
+                <strong><%= pair.a.name %></strong> 
+                (<%= pair.a.unit %>, <%= pair.a.Moqs?.length %> MOQ)
+                <br/>
+                vs
+                <strong><%= pair.b.name %></strong> 
+                (<%= pair.b.unit %>, <%= pair.b.Moqs?.length %> MOQ)
+              </div>
+              <div class="item-actions">
+
+    
+                <a 
+                  href="/ingredients/mergePreview?from=<%= encodeURIComponent(pair.b.name) %>&to=<%= encodeURIComponent(pair.a.name) %>" 
+                  class="btn btn-sm btn-outline-secondary" 
+                  target="_blank">
+                  Preview Merge of "<%= pair.b.name %>" into "<%= pair.a.name %>
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+    
+    <%- include('footerMenu') %>
+</body>
+</head>

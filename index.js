@@ -47,16 +47,16 @@ app.use(session({
           httpOnly: true,                     // cookie can't be set by javascript
  //         domain: cookieDomain,             // restricts cookie sending to just this domain - had to remove this as was not working on uni server, becsause of the way that localhost is published via apache?
  //         path: cookiePath,                 // restricts cookie sending to just the part of the path that has the routes - had to remove this as was not working on uni server, because of localhost published via apache?
-          expires: 600000                     // 10 mins before re-login given this is financial information, this is an appropriate length
+          expires: 3600000                    // 1 hour before session times out
     }
 }))
 
 
-// TEsting only
+// testing only
 app.use((req, res, next) => {
     if (process.env.NODE_ENV !== 'production') {
       req.session.userId = 'dev-user-id';
-      req.session.userEmail = 'dev@example.com';
+      req.session.userEmail = 'dev@123.com';
       req.session.userType = 'admin';
     }
     next();
@@ -92,10 +92,58 @@ app.use('/', mainRoutes)
 const ingredientsRoutes = require('./routes/ingredients');
 app.use('/ingredients', csrfProtection, ingredientsRoutes);
 
+const recipesRoutes = require('./routes/recipes');
+app.use('/recipes', csrfProtection, recipesRoutes);
+
 // Load the route handlers for /users
 const usersRoutes = require('./routes/users')
 app.use('/users', csrfProtection, usersRoutes)
 
+ // security. if the user is posting a form that has a cross site request forgery
+ // token in it and that is not valid (session has expired / they are using a page
+ // that has been loaded a long time ago / they are attempting a cross site request
+ // forgery) there is an error that is generated (and the post fails)
+ // so catch this error if it happens, and re-direct the user to the login page
+ // which will be the correct next action. If this is not here a 500 error would be 
+ // produced.
+ // left this custom error page implemented here to demonstrate CSRF invalid tokens being handled 
+ app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+      res.status(403).send(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined">                <title>Expired CSRF</title>
+                <script>
+                    let countdown = 2;                              // starting countdown timer value
+                    function updateCountdown() {
+                        const countdownElement = document.getElementById('countdown');
+                        countdownElement.textContent = countdown;
+                        if (countdown <= 0) {
+                            window.location.href = '` + ORIGIN_URL + `/users/login';  // redirect to login page
+                        } else {
+                            countdown--;
+                            setTimeout(updateCountdown, 1000);      // update every second
+                        }
+                    }
+                    window.onload = updateCountdown;                // start countdown on page load
+                </script>
+            </head>
+            <body>
+                <h1><span class="material-symbols-outlined">error</span> Invalid CSRF token</h1>
+                <p>The CSRF token has expired.</p>
+                <p>Redirecting to the login page in <span id="countdown">2</span> seconds...</p>
+                <p>If you are not redirected, <a href="/users/login">click here</a>.</p>
+            </body>
+            </html>
+        `);
+      } else {
+      next(err); 
+  }
+});
 
 // Start the web app listening
 app.listen(port, () => console.log(`Node app listening on port ${port}!`))

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+<%- include('headerMenu') %>
+
+<div class="content">
+  <h1>Preview Merge: "<%= fromName %>" → "<%= toName %>"</h1>
+
+  <% if (affectedRecipes.length === 0) { %>
+    <p>No recipes use this ingredient.</p>
+  <% } else { %>
+    <% affectedRecipes.forEach(recipe => { %>
+      <div class="item">
+        <div class="item-row">
+          <div class="item-content">
+            <strong><%= recipe.title %></strong> (Recipe ID: <%= recipe.recipeId %>)
+          </div>
+        </div>
+        <div class="item-details-row active">
+          <% recipe.updates.forEach(update => { %>
+            <div class="item">
+              <div class="item-row">
+                <div class="item-content">
+                  <strong><%= recipe.title %></strong> (Recipe ID: <%= recipe.recipeId %>)<br/>
+                  <% if (recipe.status === 'already-merged') { %>
+                    <span style="color: green; font-weight: bold;">Already Merged</span>
+                  <% } else { %>
+                    <span style="color: orange; font-weight: bold;"> Ready to Merge</span>
+                  <% } %>
+                </div>
+              </div>
+            
+              <% if (recipe.updates.length > 0) { %>
+            <table class="table table-bordered" style="width: 100%; margin-top: 10px;">
+              <thead>
+                <tr>
+                  <th style="width: 50%">Current Ingredient</th>
+                  <th style="width: 50%">Updated Ingredient</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% recipe.updates.forEach(update => { %>
+                  <tr>
+                    <td>
+                      <strong><%= update.original.amount %> <%= update.original.unit %></strong><br/>
+                      <%= update.original.ingredient_name %>
+                    </td>
+                    <td>
+                      <strong><%= update.converted.amount %> <%= update.converted.unit %></strong><br/>
+                      <%= update.converted.ingredient_name %><br/>
+                      <% if (update.converted.comment) { %>
+                        <small><em><%= update.converted.comment %></em></small>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <% } %>
+            <% if (recipe.status === 'ready') { %>
+              <form method="POST" action="/ingredients/confirmMergeRecipe" style="margin-top: 10px;">
+                <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+                <input type="hidden" name="recipeId" value="<%= recipe.recipeId %>">
+                <input type="hidden" name="from" value="<%= fromName %>">
+                <input type="hidden" name="to" value="<%= toName %>">
+                <button type="submit" class="btn btn-success">
+                Confirm Merge for "<%= recipe.title %>"
+                </button>
+              </form>
+            <% } %>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+<%- include('footerMenu') %>
+</body>
+</head>

@@ -136,3 +136,4 @@ dist
 
 
 serviceAccountKey.json
+.env

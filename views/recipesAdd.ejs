@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    
+<%- include('headerMenu') %>
+
+<div class="content">
+  <div class="form-container">
+    <h1>Add New Recipe (JSON)</h1>
+
+    <form method="POST">
+      <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+
+      <div class="input-field <%= messages.some(m => m.field === 'recipeJson') ? 'error-field' : '' %>">
+        <label for="recipeJson">Paste Full Recipe JSON</label>
+        <textarea name="recipeJson" rows="20" class="form-control" style="width: 95%"><%= previousData %></textarea>
+      </div>
+
+      <% if (messages.length > 0) { %>
+        <ul>
+          <% messages.forEach(msg => { %>
+            <li><%= msg.message %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <button type="submit" class="submit-button">Save Recipe</button>
+    </form>
+  </div>
+</div>
+
+<%- include('footerMenu') %>
+
+</body>
+</html>

@@ -74,7 +74,7 @@ the / at the end`
 `PRODUCTION_URL=https://doc.gold.ac.uk/usr/199`
 
 
-`npm install dotenv firebase firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf`
+`npm install dotenv firebase firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf string-similarity`
 
 ### forever
 

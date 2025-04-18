@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+
+<%- include('headerMenu') %>
+
+<div class="content">
+  <h1>Unused Ingredients</h1>
+
+  <% if (unusedIngredients.length === 0) { %>
+    <p>No unused ingredients found.</p>
+  <% } else { %>
+    <ul class="item-list">
+      <% unusedIngredients.forEach(ing => { %>
+        <li class="item">
+          <div class="item-row">
+            <div class="item-content">
+              <span class="item-name"><%= ing.name %></span>
+              <span class="item-value"><%= ing.unit %> / Type: <%= ing.type %></span>
+            </div>
+            <div class="item-actions">
+              <form method="POST" action="/ingredients/deleteIngredient">
+                <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+                <input type="hidden" name="ingredientName" value="<%= ing.name %>">
+                <button class="delete-btn">Delete</button>
+              </form>
+            </div>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</div>
+
+<%- include('footerMenu') %>
+</body>
+</head>
