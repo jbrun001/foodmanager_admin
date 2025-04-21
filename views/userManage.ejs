@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Manage Users - <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    
+<%- include('headerMenu') %>
+  <main class="content">
+    <h1>Manage Users</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Auth Method</th>
+          <th>MealPlans</th>
+          <th>SmartLists</th>
+          <th>StockItems</th>
+          <th>WasteLogs</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user => { %>
+          <tr>
+            <td><%= user.email %></td>
+            <td>
+              <form action="/users/<%= user.uid %>/role" method="POST" style="display:flex; align-items:center; gap:0.5rem;">
+                <!-- <input type="hidden" name="_csrf" value="%= crsfToken %"> -->
+                <select name="newRole">
+                  <option value="customer" <%= user.role === 'customer' ? 'selected' : '' %>>Customer</option>
+                  <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                </select>
+                <button type="submit">Update</button>
+              </form>
+            </td>
+            <td><%= user.authProvider %></td>
+            <td><%= user.MealPlans %></td>
+            <td><%= user.SmartLists %></td>
+            <td><%= user.StockItems %></td>
+            <td><%= user.WasteLogs %></td>
+            <td>
+              <form action="/users/<%= user.uid %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete user <%= user.email %>?');">
+                <!-- <input type="hidden" name="_csrf" value="%= crsfToken %"> -->
+                <button type="submit" style="background-color:#e63946; color:white;">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+  <%- include('footerMenu') %>
+</body>
+</html>
