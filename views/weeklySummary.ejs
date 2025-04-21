@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Waste Summary Reports<%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+
+<%- include('headerMenu') %>
+
+<main class="content">
+  <h1>Weekly Summary Report</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Week Start</th>
+        <th>Food Bought (g)</th>
+        <th>Total Waste (g)</th>
+        <th>Composted (g)</th>
+        <th>Inedible (g)</th>
+        <th>Planned Portions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(row => { %>
+        <tr>
+          <td><%= row.email %></td>
+          <td><%= row.week %></td>
+          <td><%= row.food_bought_g %></td>
+          <td><%= row.total_waste_g %></td>
+          <td><%= row.total_composted_g %></td>
+          <td><%= row.total_inedible_g %></td>
+          <td><%= row.plannedPortions %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</main>
+<%- include('footerMenu') %>
+</body>
+</html>

@@ -220,7 +220,6 @@ router.post('/:userId/delete', redirectLogin, async (req, res, next) => {
 });
   
   
-  
 
 // Export the router object so index.js can access it
 module.exports = router
