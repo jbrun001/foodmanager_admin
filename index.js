@@ -51,7 +51,7 @@ app.use(session({
     }
 }))
 
-
+/*
 // testing only
 app.use((req, res, next) => {
     if (process.env.NODE_ENV !== 'production') {
@@ -61,7 +61,7 @@ app.use((req, res, next) => {
     }
     next();
 });
-
+*/
 console.log(`Domain: ${cookieDomain} Path: ${cookiePath}`)
 // Security.  Disable this http header to make it harder for attackers to know what technology is being used
 app.disable('x-powered-by')   
@@ -95,9 +95,9 @@ app.use('/ingredients', csrfProtection, ingredientsRoutes);
 const recipesRoutes = require('./routes/recipes');
 app.use('/recipes', csrfProtection, recipesRoutes);
 
-// Load the route handlers for /users
+// Load the route handlers for /users - remove csrf protection because now using google sign in
 const usersRoutes = require('./routes/users')
-app.use('/users', csrfProtection, usersRoutes)
+app.use('/users', usersRoutes)
 
  // security. if the user is posting a form that has a cross site request forgery
  // token in it and that is not valid (session has expired / they are using a page
