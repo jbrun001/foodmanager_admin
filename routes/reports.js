@@ -107,21 +107,33 @@ router.get('/weeklySummary', redirectLogin, async (req, res, next) => {
                 }
             }
             
-            // merge data sets together before pushing
-            // had to do this because otherwise only records where week matched 
-            // would be pushed
-            const mergedWeeks = {};
-            Object.keys(foodByWeek).forEach(week => {
-                mergedWeeks[week] = true;
-            });
-            Object.keys(wasteByWeek).forEach(week => {
-                mergedWeeks[week] = true;
-            });
-            Object.keys(portionsByWeek).forEach(week => {
-                mergedWeeks[week] = true;
-            });            
+            // ccreating a list of all possinble
+            // weekdates in the 3 results
+            // this is so when we loop through this below
+            // we examine every date that has data in any of the results
+            const foodWeeks = Object.keys(foodByWeek);
+            for (let i = 0; i < wasteWeeks.length; i++) {
+                const week = foodWeeks[i];
+                if (!(week in mergedWeeks)) {
+                    mergedWeeks[week] = true;  // if not there create an entry with value true
+                }
+            }
+            const wasteWeeks = Object.keys(wasteByWeek);
+            for (let i = 0; i < wasteWeeks.length; i++) {
+                const week = wasteWeeks[i];
+                if (!(week in mergedWeeks)) {
+                    mergedWeeks[week] = true;
+                }
+            }
+            const portionsWeeks = Object.keys(portionsByWeek);
+            for (let i = 0; i < portionsWeeks.length; i++) {
+                const week = portionsWeeks[i];
+                if (!(week in mergedWeeks)) {
+                    mergedWeeks[week] = true;
+                }
+            }
 
-            // push rows to object for ejs.
+            // push rows to object for ejs, loop through all possible dates
             for (const week in mergedWeeks) {
                 // get the data for reporting, if a week has no data then output 0's for all fields
                 const waste = wasteByWeek[week] || { total: 0, composted: 0, inedible: 0 };
