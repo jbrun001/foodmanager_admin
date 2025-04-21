@@ -107,12 +107,13 @@ router.get('/weeklySummary', redirectLogin, async (req, res, next) => {
                 }
             }
             
-            // ccreating a list of all possinble
+            // creating a list of all possinble
             // weekdates in the 3 results
             // this is so when we loop through this below
             // we examine every date that has data in any of the results
+            const mergedWeeks = {};
             const foodWeeks = Object.keys(foodByWeek);
-            for (let i = 0; i < wasteWeeks.length; i++) {
+            for (let i = 0; i < foodWeeks.length; i++) {
                 const week = foodWeeks[i];
                 if (!(week in mergedWeeks)) {
                     mergedWeeks[week] = true;  // if not there create an entry with value true
