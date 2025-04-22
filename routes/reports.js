@@ -134,9 +134,9 @@ async function generateWeeklySummaryData() {
                 mergedWeeks[week] = true;
             }
         }
-console.log('FOOD weeks:', Object.keys(foodByWeek));
-console.log('WASTE weeks:', Object.keys(wasteByWeek));
-console.log('PORTIONS weeks:', Object.keys(portionsByWeek));
+console.log('Food weeks:', Object.keys(foodByWeek));
+console.log('Waste weeks:', Object.keys(wasteByWeek));
+console.log('Portions weeks:', Object.keys(portionsByWeek));
         // push rows to object for ejs, loop through all possible dates
         for (const week in mergedWeeks) {
 console.log(`PUSHING ROW: ${userEmail} | week: ${week}`);
@@ -177,7 +177,7 @@ router.get('/weeklySummary/csv', redirectLogin, async (req, res, next) => {
         const rows = await generateWeeklySummaryData();
         // rename headers to match what juptr is expecting 
         const headers = [
-            'person_id',
+            'id',
             'week',
             'food_bought_g',
             'total_waste_g',
