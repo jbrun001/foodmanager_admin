@@ -12,23 +12,11 @@
         <main class="content">
             <h1>Welcome to <%=appData.appName%></h1>
             <% if (loggedInStatus === 'not logged in') { %>
-                <p>Fund Tracker is a portfolio management and reporting application<p>
-                <p>It lets you</p>
-                <ul>
-                    <li>search and select funds</li>
-                    <li>record transactions for buying and selling</li>
-                    <li>shows you your funds current value</li>
-                    <li>how much of each fund you have and</li>
-                    <li>and what that fund cost you</li>
-                </ul>
-                <p>Why give it a try?  It's free.</p>
-                <p>You are welcome to register using register menu item on the left</p>
-                <p>Clicking on a link that requires you to be a user will take you to the login page to log in.</p>
+                <p>Food Manager<p>
                 <% } else { %>
                     <p>Welcome back <%= loggedInStatus %>, it's good to see you again.</p>
                     <p>Check out all the menu options on the left.</p>
-                    <p>Remember after 10 minutes of inactivity you will need to log in again</p>
-                    
+                    <p>Remember after 60 minutes of inactivity you will need to log in again</p>
             <% } %>
         </main>
         <%- include('footerMenu') %>

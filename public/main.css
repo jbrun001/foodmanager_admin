@@ -1,10 +1,10 @@
 /* added variables for key elements so can easily change and see what looks better */
 :root {
-    --menu-width: 175px;
+    --menu-width: 225px;
     --menu-collapsed-width: 70px;
     --header-height: 60px;
-    --background-colour: #007bff;
-    --background-colour-hover: #0056b3;
+    --background-colour: #9c27b0;
+    --background-colour-hover: #4b0082;
     --item-hover: #e0e0e0;
     --error-border: red;
     --error-background: #ffe6e6 

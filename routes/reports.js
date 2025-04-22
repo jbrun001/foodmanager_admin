@@ -18,7 +18,6 @@ async function generateWeeklySummaryData() {
     for (const userDoc of usersSnap.docs) {
         const userId = userDoc.id;
         const userEmail = userDoc.data().email || 'Unknown';
-
         // get smartlists
         const smartListsSnap = await db.collection(`Users/${userId}/SmartLists`).get();
         const foodByWeek = {};  // results holder - format '2025-04-20': 320 
@@ -26,17 +25,14 @@ async function generateWeeklySummaryData() {
         for (const smartDoc of smartListsSnap.docs) {
             const dateStr = smartDoc.id;
             const items = smartDoc.data().items || [];
-        
             const date = new Date(dateStr);
             if (isNaN(date)) {
                 console.warn(`Skipping SmartList for user ${userId} — invalid date format in doc ID: ${dateStr}`);
                 continue;
             }
-        
             const sunday = new Date(date);
             sunday.setDate(date.getDate() - date.getDay());
             const weekStr = sunday.toISOString().split('T')[0];
-        
             let weeklyTotal = 0;
             items.forEach(item => {
                 // fix any bad numbers
@@ -44,12 +40,10 @@ async function generateWeeklySummaryData() {
                 if (!isNaN(amt)) {
                     weeklyTotal += amt;
                 }
-            });
-        
+            });       
             if (!foodByWeek[weekStr]) foodByWeek[weekStr] = 0;
             foodByWeek[weekStr] += weeklyTotal;
         }          
-
         // process wastelogs
         const wasteLogsSnap = await db.collection(`Users/${userId}/WasteLogs`).get();
         const wasteByWeek = {}; // week: { total, composted, inedible }
@@ -60,7 +54,14 @@ async function generateWeeklySummaryData() {
             console.dir(doc.data(), { depth: null });
             let weekStr;
             try {
-                weekStr = week.toDate().toISOString().split('T')[0];
+                // weekStr = week.toDate().toISOString().split('T')[0];
+                // fix becuase above line was setting to the day before when it was converted
+                // because it took an hour off becaues timezone - getting date this way
+                // stops any changes to the day
+                const localDate = week.toDate();
+                weekStr = localDate.getFullYear() + '-' +
+                          String(localDate.getMonth() + 1).padStart(2, '0') + '-' +
+                          String(localDate.getDate()).padStart(2, '0');
             } catch (err) {
                 console.warn(`Skipping WasteLog with invalid 'week' for user ${userId}:`, err.message);
                 continue;
@@ -133,9 +134,12 @@ async function generateWeeklySummaryData() {
                 mergedWeeks[week] = true;
             }
         }
-
+console.log('FOOD weeks:', Object.keys(foodByWeek));
+console.log('WASTE weeks:', Object.keys(wasteByWeek));
+console.log('PORTIONS weeks:', Object.keys(portionsByWeek));
         // push rows to object for ejs, loop through all possible dates
         for (const week in mergedWeeks) {
+console.log(`PUSHING ROW: ${userEmail} | week: ${week}`);
             // get the data for reporting, if a week has no data then output 0's for all fields
             const waste = wasteByWeek[week] || { total: 0, composted: 0, inedible: 0 };
             const portions = portionsByWeek[week] || 0;
