@@ -7,13 +7,12 @@ const {ORIGIN_URL} = require('./helpers/getOriginURL');
 var ejs = require('ejs')
 const csrf = require('csurf');                                // middleware for CSRF tokens
 
-
 // Import dotenv so we can store secrets out of view of github
 // and we can have different settings for production and development
 require("dotenv").config();  
 
 const app = express()                                         // Create the express application object
-const port = 8000
+const port = 8080
 app.set('view engine', 'ejs')                                 // Tell Express that we want to use EJS as the templating engine
 app.use(expressSanitizer());                                  // Create an input sanitizer
 app.use(express.urlencoded({ extended: true }))               // Set up the body parser 
@@ -25,15 +24,24 @@ app.use(express.static(__dirname + '/public'))                // Set up public f
 // if this was true the production server would not work so had to set back to false
 // all routes that used session variables failed - I presume because it
 // couldn't access the cookies over https.
-let cookieSecure = false                                              
-const url = new URL(ORIGIN_URL);
-const cookieDomain = url.hostname;    // extracts the domain 
-let cookiePath = url.pathname;        // extracts the path 
-if (!cookiePath.endsWith('/')) {
-    cookiePath += '/';
+let cookieSecure = false;
+let cookieDomain = '';
+let cookiePath = '/';
+
+if (ORIGIN_URL) {
+  try {
+    const url = new URL(ORIGIN_URL);
+    cookieDomain = url.hostname;
+    cookiePath = url.pathname;
+    if (!cookiePath.endsWith('/')) {
+      cookiePath += '/';
+    }
+  } catch (err) {
+    console.error('Invalid ORIGIN_URL:', ORIGIN_URL);
+  }
 }
-if (process.env.LIVE_SYSTEM.toLowerCase() == "false") {
-    cookieSecure = false
+if (process.env.LIVE_SYSTEM?.toLowerCase() === "true") {
+  cookieSecure = true;
 }
 
 // create a session

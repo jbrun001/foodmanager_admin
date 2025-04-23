@@ -23,8 +23,8 @@ const loginRateLimiter = rateLimit({
 // access blocked authentication error fix:
 // https://console.cloud.google.com/apis/credentials?hl=en&project=foodmanager-f117f
 // select edit oAuth2 web client
-// add the URL in the authorised javascript origins i,e, http://localhost:8000
-// add the call back url in the section below that i.e http://localhost:8000/users/oauth-callback 
+// add the URL in the authorised javascript origins i,e, http://localhost:8080
+// add the call back url in the section below that i.e http://localhost:8080/users/oauth-callback 
 router.post('/oauth-callback', express.json(), async (req, res, next) => {
     try {
         const token = req.body.credential;

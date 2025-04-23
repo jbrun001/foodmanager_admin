@@ -1,4 +1,99 @@
 # README for food manager admin
+
+# container deploy using docker
+
+# Google Cloud Run Deployment Guide (Apple Silicon Compatible)
+
+This guide covers everything too **build**, **start**, and **stop** this app when using docker app  **Google Cloud Run** using **Artifact Registry**, this is tailored for **Apple Silicon** users.
+
+---
+
+## Prerequisites
+
+- Google Cloud project ID: `foodmanager-f117f`
+- Artifact Registry repo: `docker-repo` in region `europe-west2`
+- App name: `foodmanager-admin`
+- Docker & `gcloud` CLI installed
+- Docker supports `buildx` (default on recent Docker installs)
+
+---
+
+## Build & Push Docker Image (Apple Silicon Safe)
+
+Build for `linux/amd64` (required for Cloud Run) and push directly to Artifact Registry:
+
+```bash
+docker buildx build --platform linux/amd64 \
+  -t europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodmanager-admin . \
+  --push
+```
+
+---
+
+## Deploy to Google Cloud Run
+
+Deploy the image from Artifact Registry:
+
+```bash
+gcloud run deploy foodmanager-admin \
+  --image europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodmanager-admin \
+  --region europe-west2 \
+  --platform managed \
+  --allow-unauthenticated
+```
+
+This will return a **public URL** for your live app.
+
+---
+
+## Stop / Delete the Cloud Run Service
+
+Clean up the deployed Cloud Run service (optional):
+
+```bash
+gcloud run services delete foodmanager-admin \
+  --region=europe-west2
+```
+
+Note: This **does not** delete the Docker image from Artifact Registry.
+
+---
+
+## Optional: Remove Local Docker Image
+
+Free up local disk space:
+
+```bash
+docker image rm europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodmanager-admin
+```
+
+---
+
+## Re-authenticate or Switch Config (if needed)
+
+If you change machines, accounts, or environments:
+
+```bash
+gcloud auth login
+gcloud config set project foodmanager-f117f
+gcloud auth configure-docker europe-west2-docker.pkg.dev
+```
+
+---
+
+## View Logs (Cloud Run)
+
+To check logs from your deployed Cloud Run service:
+
+```bash
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=foodmanager-admin" \
+  --project=foodmanager-f117f --limit=50 --format="value(textPayload)"
+```
+
+
+
+
+# local install
 This is the readme containing installation instructions 
 
 # Initial Installation

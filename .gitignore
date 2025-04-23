@@ -137,3 +137,19 @@ dist
 
 serviceAccountKey.json
 .env
+
+# Puppeteer
+.chromium/          
+.cache/
+
+# Docker
+Dockerfile
+.dockerignore
+*.local
+docker-compose.override.yml
+
+logs/
+
+
+# google cloud needs different format for .env - settings to be the same
+.env-googlecloudrun.yaml
