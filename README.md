@@ -39,7 +39,8 @@ gcloud run deploy foodmanager-admin \
   --image europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodmanager-admin \
   --region europe-west2 \
   --platform managed \
-  --allow-unauthenticated
+  --allow-unauthenticated \
+  --env-vars-file .env-googlecloudrun.yaml
 ```
 
 This will return a **public URL** for your live app.
