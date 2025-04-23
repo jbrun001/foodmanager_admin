@@ -1,0 +1,39 @@
+@startuml
+' Deployment Diagram for foodmanager-admin
+
+skinparam componentStyle rectangle
+skinparam rectangle {
+  BackgroundColor #fdf6e3
+  BorderColor Black
+}
+
+node "User Browser" {
+  [Google Sign-In UI]
+}
+
+cloud "Google Cloud" {
+  node "Firebase Hosting" {
+    [foodmanager-admin Node.js App]
+  }
+
+  database "Firebase Firestore" {
+    [Firestore DB]
+  }
+
+  [Firebase Auth]
+  [Firebase Admin SDK]
+}
+
+cloud "Google" {
+  [Google OAuth 2.0 Provider]
+}
+
+' Interactions
+[Google Sign-In UI] --> [Google OAuth 2.0 Provider] : Redirect for auth
+[Google OAuth 2.0 Provider] --> [Google Sign-In UI] : Auth callback
+[Google Sign-In UI] --> [foodmanager-admin Node.js App] : Authenticated request (Google JWT)
+[foodmanager-admin Node.js App] --> [Firebase Auth] : Validate JWT
+[foodmanager-admin Node.js App] --> [Firebase Admin SDK] : Access Firestore
+[foodmanager-admin Node.js App] --> [Firestore DB] : Query / Write data
+
+@enduml

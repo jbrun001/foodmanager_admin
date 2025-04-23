@@ -1,0 +1,64 @@
+@startuml layer1
+skinparam componentStyle rectangle
+
+node "User Browser" {
+  [Google Sign-In UI]
+  [HTML Forms (EJS Views)]
+}
+
+cloud "Google Cloud" {
+  node "Google Cloud Run Contanerised Imageß" {
+    node "Node.js App (foodmanager-admin)" {
+      [Express Server]
+      [Main Routes]
+      [Users Routes]
+      [Ingredients Routes]
+      [Recipes Routes]
+      [Reports Routes]
+      [Session Middleware (express-session)]
+      [CSRF Middleware (csurf)]
+      [Firebase Admin SDK]
+      [EJS View Engine]
+      [Sanitizer + Validators]
+    }
+  }
+
+  database "Firestore DB" {
+    
+    [Firebase Firestore]
+  }
+
+  [Firebase Auth]
+}
+
+cloud "Google" {
+  [Google OAuth 2.0]
+}
+
+'--- Interactions and internal wiring ---
+[Google Sign-In UI] --> [Google OAuth 2.0] : Sign-in request
+[Google OAuth 2.0] --> [Google Sign-In UI] : Auth callback
+[Google Sign-In UI] --> [Users Routes] : /users/login callback (JWT token)
+[Users Routes] --> [Firebase Auth] : Verify Google ID Token
+[Users Routes] --> [Session Middleware (express-session)] : Set session data
+[Users Routes] --> [Express Server]
+
+[Express Server] --> [Main Routes]
+[Express Server] --> [Ingredients Routes]
+[Express Server] --> [Recipes Routes]
+[Express Server] --> [Reports Routes]
+[Main Routes] --> [EJS View Engine]
+[Ingredients Routes] --> [CSRF Middleware (csurf)]
+[Recipes Routes] --> [CSRF Middleware (csurf)]
+[Reports Routes] --> [CSRF Middleware (csurf)]
+
+[Main Routes] --> [Firebase Admin SDK]
+[Ingredients Routes] --> [Firebase Admin SDK]
+[Recipes Routes] --> [Firebase Admin SDK]
+[Reports Routes] --> [Firebase Admin SDK]
+[Firebase Admin SDK] --> [Firebase Firestore]
+
+[Sanitizer + Validators] --> [Express Server]
+[EJS View Engine] --> [HTML Forms (EJS Views)]
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml foodmanager-admin
+allowmixing
+skinparam linetype ortho
+skinparam nodesep 30
+skinparam ranksep 40
+
+actor "User" as user
+
+node "Developer Machine" {
+  component "Local Build Tools\n(Docker + gcloud CLI)" as tools
+}
+
+cloud "Google Cloud" {
+  node "Cloud Run\n(foodmanager-admin)" as run {
+    component "Node.js Web App\n(Express + EJS)" as app
+  }
+
+  node "Artifact Registry" {
+    component "Docker Image:\nfoodmanager-admin" as image
+  }
+
+  database "Firestore / Firebase" as db
+}
+
+user --> app : HTTP(S) requests
+tools --> image : docker push
+tools --> run : gcloud deploy
+run --> image : pulls on deploy
+app --> db : Firebase Admin access
+
+@enduml
+
