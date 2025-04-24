@@ -14,7 +14,7 @@ This guide covers everything too **build**, **start**, and **stop** this app whe
 - Artifact Registry repo: `docker-repo` in region `europe-west2`
 - App name: `foodmanager-admin`
 - Docker & `gcloud` CLI installed
-- Docker supports `buildx` (default on recent Docker installs)
+- Docker supports `buildx` 
 
 ---
 
@@ -43,20 +43,17 @@ gcloud run deploy foodmanager-admin \
   --env-vars-file .env-googlecloudrun.yaml
 ```
 
-This will return a **public URL** for your live app.
 
 ---
 
 ## Stop / Delete the Cloud Run Service
-
-Clean up the deployed Cloud Run service (optional):
 
 ```bash
 gcloud run services delete foodmanager-admin \
   --region=europe-west2
 ```
 
-Note: This **does not** delete the Docker image from Artifact Registry.
+This **does not** delete the Docker image from Artifact Registry.
 
 ---
 
@@ -72,8 +69,6 @@ docker image rm europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodma
 
 ## Re-authenticate or Switch Config (if needed)
 
-If you change machines, accounts, or environments:
-
 ```bash
 gcloud auth login
 gcloud config set project foodmanager-f117f
@@ -83,8 +78,6 @@ gcloud auth configure-docker europe-west2-docker.pkg.dev
 ---
 
 ## View Logs (Cloud Run)
-
-To check logs from your deployed Cloud Run service:
 
 ```bash
 gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=foodmanager-admin" \
