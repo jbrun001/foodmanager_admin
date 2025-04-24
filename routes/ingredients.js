@@ -322,34 +322,35 @@ router.get('/mergePreview', redirectLogin, async (req, res) => {
 router.post('/confirmMergeRecipe', redirectLogin, async (req, res) => {
   const { recipeId, from, to } = req.body;
   const loggedInStatus = getLoggedInUser(req);
-
   try {
     const docRef = db.collection('recipes').doc(recipeId);
     const recipeDoc = await docRef.get();
     const recipe = recipeDoc.data();
-
-    const updatedIngredients = [];
+    const updatedIngredients = [];  // ingredients to update
     const unitConversionTable = {
-      'test' : 150
+      'kg' : 1000
     };
-
+    // loop through ingredients for the passed recipe
+    // if null set to []
     for (const ing of recipe.ingredients || []) {
+      // is this ingredient the one we are changing   
       if (ing.ingredient_name === from) {
+        // copy everything from cuurent ingredient
+        // but overwrite the ingredient-name with the 
+        // name of the ingredient passed
         const newIng = { ...ing, ingredient_name: to };
-
+        // check for any conversions to grams
         if (ing.unit === 'pcs' && unitConversionTable[to]) {
           newIng.amount = ing.amount * unitConversionTable[to];
           newIng.unit = 'g';
         }
-
-        updatedIngredients.push(newIng);
-      } else {
-        updatedIngredients.push(ing);
+        updatedIngredients.push(newIng);  // put new ingredient in
+        } else {
+        updatedIngredients.push(ing);     // keep old ingredient
       }
     }
-
+    // replace the ingredient array of objects in the recipe
     await docRef.update({ ingredients: updatedIngredients });
-
     res.redirect(`/ingredients/mergePreview?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
   } catch (err) {
     console.error(err);
