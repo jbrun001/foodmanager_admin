@@ -143,7 +143,6 @@ serviceAccountKey.json
 .cache/
 
 # Docker
-Dockerfile
 .dockerignore
 *.local
 docker-compose.override.yml
