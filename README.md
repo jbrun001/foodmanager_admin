@@ -2,9 +2,9 @@
 
 # container deploy using docker
 
-# Google Cloud Run Deployment Guide (Apple Silicon Compatible)
+# Google Cloud Run Deployment
 
-This guide covers everything too **build**, **start**, and **stop** this app when using docker app  **Google Cloud Run** using **Artifact Registry**, this is tailored for **Apple Silicon** users.
+This guide covers build,  start, stop this app when using docker. Google Cloud Run using Artifact Registry, this has been tested from Apple Silicon.
 
 ---
 
@@ -18,6 +18,23 @@ This guide covers everything too **build**, **start**, and **stop** this app whe
 
 ---
 
+## To build and run locally for testing
+```bash
+docker build --platform linux/amd64 -t foodmanager-admin .
+docker run --platform=linux/amd64 -p 8080:8080 --env-file .env foodmanager-admin
+```
+note .env is used locally and .envgooglecloudrun.yaml is used when depolying to google cloud
+different format for the same data
+localhost:8080
+---
+
+## To stop running locally
+```bash
+docker ps -q --filter ancestor=foodmanager-admin | xargs docker stop
+```
+---
+
+
 ## Build & Push Docker Image (Apple Silicon Safe)
 
 Build for `linux/amd64` (required for Cloud Run) and push directly to Artifact Registry:
@@ -27,7 +44,6 @@ docker buildx build --platform linux/amd64 \
   -t europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodmanager-admin . \
   --push
 ```
-
 ---
 
 ## Deploy to Google Cloud Run
@@ -67,7 +83,7 @@ docker image rm europe-west2-docker.pkg.dev/foodmanager-f117f/docker-repo/foodma
 
 ---
 
-## Re-authenticate or Switch Config (if needed)
+## Re-authenticate or Switch Config 
 
 ```bash
 gcloud auth login
@@ -83,8 +99,6 @@ gcloud auth configure-docker europe-west2-docker.pkg.dev
 gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=foodmanager-admin" \
   --project=foodmanager-f117f --limit=50 --format="value(textPayload)"
 ```
-
-
 
 
 # local install
@@ -160,10 +174,10 @@ use nano to create .env file (contains security details so not synced with git) 
 `# this is the production URL on the live server do not include 
 the / at the end`
 
-`PRODUCTION_URL=https://doc.gold.ac.uk/usr/199`
+`PRODUCTION_URL=`
 
 
-`npm install dotenv firebase firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf string-similarity google-auth-library`
+`npm install dotenv firebase firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf string-similarity google-auth-library puppeteer puppeteer-extra puppeteer-extra-plugin-stealth`
 
 ### forever
 

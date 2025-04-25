@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Scrape Overview – <%= appData.appName %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+
+    <%- include('headerMenu') %>
+
+    <div class="content">
+      <h1>Scrape Testing</h1>
+      <p>Click <strong>Test Scrape</strong> to test pack size scraping for each ingredient URL.</p>
+
+      <div style="overflow-x:auto;">
+        <table class="table table-striped" style="min-width: 800px; width: 100%;">
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Store</th>
+              <th>MOQ</th>
+              <th>Units</th>
+              <th>Last Updated</th>
+              <th>URL</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% ingredients.forEach(item => { %>
+              <tr>
+                <td><%= item.ingredientName %></td>
+                <td><%= item.storeName || '—' %></td>
+                <td><%= item.amount || '—' %></td>
+                <td><%= item.units || '—' %></td>
+                <td><%= item.lastCollected || '—' %></td>
+                <td>
+                  <% if (!item.URL || item.URL.trim() === '') { %>
+                    <span class="text-danger">[missing]</span>
+                  <% } else { %>
+                    <a href="<%= item.URL %>" target="_blank">product</a>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (item.URL && item.URL.trim() !== '') { %>
+                    <a 
+                      href="/scrapes/test/<%= item.ingredientId %>/<%= item.moqIndex %>" 
+                      class="btn btn-sm btn-primary">
+                      Test Scrape
+                    </a>
+                  <% } else { %>
+                    <span class="text-muted">N/A</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <%- include('footerMenu') %>
+  </body>
+</html>

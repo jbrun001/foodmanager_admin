@@ -1,0 +1,23 @@
+@startuml sd
+node "Google Cloud Run (or Local Host)" {
+  component "Node.js App" {
+    artifact "scrapePackSize.js"
+    artifact "routes/scrapes.js"
+    artifact "index.js"
+
+    [scrapePackSize.js] --> [puppeteer-extra]
+    [scrapePackSize.js] --> [puppeteer-extra-plugin-stealth]
+}
+
+  component "Express Route (/scrapes/...)" {
+    [routes/scrapes.js] --> [scrapePackSize.js]
+    [index.js] --> [routes/scrapes.js]
+  }
+}
+
+node "Supermarket Website" {
+  [supermarket.com] <<external>>
+  [scrapePackSize.js] --> [supermarket.com] : Puppeteer (headless Chrome)
+}
+
+@enduml

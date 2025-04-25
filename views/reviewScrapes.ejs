@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Review Scrapes – <%= appData.appName %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+  <%- include('headerMenu') %>
+
+    <div class="content">
+      <h1>Review Scrape Results</h1>
+      <div style="margin-top: 2em;">
+        <a href="/scrapes/createBatch" class="btn btn-secondary">Back to Create Batches</a>
+      </div>    
+
+      <form method="GET" action="/scrapes/reviewScrapes" class="form-container" style="margin-bottom: 2em;">
+        <label for="weeks">Scraped less than:</label>
+        <select name="weeks" id="weeks">
+          <% for (let i = 1; i <= 10; i++) { %>
+            <option value="<%= i %>" <%= selectedWeeks === i ? 'selected' : '' %>>
+              <%= i %> weeks ago
+            </option>
+          <% } %>
+        </select>
+
+        <label for="match">Match Status:</label>
+        <select name="match" id="match">
+          <option value="non-matching" <%= selectedMatch === "non-matching" ? 'selected' : '' %>>Non-matching</option>
+          <option value="matching" <%= selectedMatch === "matching" ? 'selected' : '' %>>Matching</option>
+          <option value="all" <%= selectedMatch === "all" ? 'selected' : '' %>>All</option>
+        </select>
+
+        <label for="review">Review Status:</label>
+        <select name="review" id="review">
+          <option value="pending" <%= selectedReview === "pending" ? 'selected' : '' %>>Pending</option>
+          <option value="reviewed" <%= selectedReview === "reviewed" ? 'selected' : '' %>>Reviewed</option>
+          <option value="all" <%= selectedReview === "all" ? 'selected' : '' %>>All</option>
+        </select>
+
+        <button type="submit" class="btn add-btn">Apply Filters</button>
+      </form>
+      <div class="form-container">
+      <% if (results.length > 0) { %>
+        <table class="table table-striped" style="width: 100%; max-width: 1000px;">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Reviewed?</th>
+              <th>Ingredient</th>
+              <th>Store</th>
+              <th>Scraped</th>
+              <th>Current Amount</th>
+              <th>Scraped Amount</th>
+              <th>Scrape Log</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let i = 0; i < results.length; i++) {
+                 const r = results[i]; %>
+              <tr>
+                <td>
+                    <form method="POST" action="/scrapes/updateFromResult/<%= r.id %>" style="margin-bottom: 0.5em;">
+                      <input type="hidden" name="_csrf" value="<%= crsfToken %>" />
+                      <button type="submit" class="btn" <%= r.reviewed ? "disabled" : "" %>>Update</button>
+                    </form>
+                    <form method="POST" action="/scrapes/ignoreResult/<%= r.id %>">
+                      <input type="hidden" name="_csrf" value="<%= crsfToken %>" />
+                      <button type="submit" class="btn" <%= r.reviewed ? "disabled" : "" %>>Ignore</button>
+                    </form>
+                </td>
+                <td><%= r.reviewed ?? "—" %></td>
+                <td><%= r.ingredientName %></td>
+                <td><%= r.storeName %></td>
+                <td><%= new Date(r.scrapeDate).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" }) %></td>
+                <td><%= r.currentAmount ?? "—" %> <%= r.currentUnits ?? "—" %></td>
+                <td><%= r.scrapedAmount ?? "—" %> <%= r.currentUnits ?? "—" %></td>
+
+                <td><button type="button" class="btn add-btn" onclick="document.getElementById('logModal-<%= r.id %>').style.display='block'">View</button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="9">
+                  <div id="logModal-<%= r.id %>" class="modal" style="display: none; position: fixed; top: 5%; left: 5%; width: 90%; max-height: 80%; background-color: white; border: 1px solid #ccc; padding: 1em; overflow-y: auto; z-index: 1000;">
+                    <h3>Scrape Log for <%= r.ingredientName %></h3>
+                    <div style="font-size: 0.9em; background-color: #f5f5f5; padding: 1em; border: 1px solid #ddd;">
+                      <%= r.scrapeLog.join("</br>") %>
+                    </div>
+                    <div style="text-align: right; margin-top: 1em;">
+                      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('logModal-<%= r.id %>').style.display='none'">Close</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <!-- modal pop up called from the view log button (one for each of the rows -->
+              <div id="logModal-<%= r.id %>" class="modal" style="display: none; position: fixed; top: 5%; left: 5%; width: 90%; max-height: 80%; background-color: white; border: 1px solid #ccc; padding: 1em; overflow-y: auto; z-index: 1000;">
+                <h3>Scrape Log for <%= r.ingredientName %></h3>
+                <pre style="white-space: pre-wrap; font-size: 0.9em; background-color: #f5f5f5; padding: 1em; border: 1px solid #ddd;">
+              <% r.scrapeLog.forEach(line => { %><%= line %>
+              <% }) %>
+                </pre>
+                <div style="text-align: right; margin-top: 1em;">
+                  <button class="btn btn-sm btn-secondary" onclick="document.getElementById('logModal-<%= r.id %>').style.display='none'">Close</button>
+                </div>
+            </div>          
+              <% } %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No scrape results found for the selected filters.</p>
+      <% } %>
+    </div>
+    </div>
+
+    <%- include('footerMenu') %>
+  </body>
+</html>

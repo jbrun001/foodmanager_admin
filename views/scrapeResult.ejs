@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Scrape Result – <%= appData.appName %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+    <%- include('headerMenu') %>
+
+    <div class="content">
+      <h1>Scrape Result for "<%= ingredientName %>"</h1>
+
+      <div class="form-container" style="margin-bottom: 2em;">
+        <h2>Comparison</h2>
+        <table class="table table-striped" style="width: 100%; max-width: 800px;">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>From Database</th>
+              <th>Scraped from Page</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Amount</td>
+              <td><%= moq.amount || '—' %></td>
+              <td><%= scrapeResult.packSize || 'Not found' %></td>
+            </tr>
+            <tr>
+              <td>Units</td>
+              <td><%= moq.units || '—' %></td>
+              <td><%= scrapeResult.units || 'Not found' %></td>
+            </tr>
+            <tr>
+              <td>URL</td>
+              <td colspan="2">
+                <a href="<%= moq.URL %>" target="_blank"><%= moq.URL %></a>
+              </td>
+            </tr>
+            <tr>
+              <td>Scraped Page Title</td>
+              <td colspan="2"><%= scrapeResult.title || '—' %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-container">
+        <h2>Scrape Log</h2>
+        <pre style="background-color: #f7f7f7; padding: 1em; border: 1px solid #ccc; max-height: 400px; overflow-y: auto;">
+<% scrapeResult.logs.forEach(line => { %>
+<%= line %>
+<% }) %>
+        </pre>
+      </div>
+
+      <div style="margin-top: 2em;">
+        <a href="/scrapes/overview" class="btn btn-secondary">Back to Scrape Test Overview</a>
+        <a href="/scrapes/createBatches" class="btn btn-secondary">Back to Manage Scrape Batches</a>
+
+      </div>
+    </div>
+
+    <%- include('footerMenu') %>
+  </body>
+</html>
