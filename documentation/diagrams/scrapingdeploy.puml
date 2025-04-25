@@ -11,7 +11,7 @@ database "Firestore" {
   RECTANGLE Ingredients
 }
 
-rectangle "scrapes createBatch" as CreateBatch
+rectangle "scrapes/createBatch" as CreateBatch
 rectangle "/scrapes/runBatch" as RunBatch
 rectangle "/scrapes/deleteBatch" as DeleteBatch
 rectangle "/scrapes/reviewScrapes" as ReviewScrapes
@@ -32,5 +32,116 @@ scrapes.js --> scrapePackSize.js : calls scrapePackSize()
 scrapes.js --> ScrapeBatches : reads/writes batches
 scrapes.js --> ScrapeResults : creates/updates results
 scrapes.js --> Ingredients : reads/updates ingredient data
+
+@enduml
+
+
+@startuml
+
+actor "Browser/Client" as Client
+
+node "Web Server (Express)" {
+  component "scrapes.js"
+  component "scrapePackSize.js"
+}
+
+database "Firestore" {
+  component "ScrapeBatches"
+  component "ScrapeResults"
+  component "Ingredients"
+}
+
+' define route entrypoints
+component "/scrapes/createBatch" as CreateBatch
+component "/scrapes/runBatch" as RunBatch
+component "/scrapes/deleteBatch" as DeleteBatch
+component "/scrapes/reviewScrapes" as ReviewScrapes
+component "/scrapes/ignoreResult" as IgnoreResult
+component "/scrapes/updateFromResult" as UpdateFromResult
+component "/scrapes/test" as TestScrape
+
+' client accesses routes
+Client --> CreateBatch
+Client --> RunBatch
+Client --> DeleteBatch
+Client --> ReviewScrapes
+Client --> IgnoreResult
+Client --> UpdateFromResult
+Client --> TestScrape
+
+' each route handled by scrapes.js
+CreateBatch --> "scrapes.js"
+RunBatch --> "scrapes.js"
+DeleteBatch --> "scrapes.js"
+ReviewScrapes --> "scrapes.js"
+IgnoreResult --> "scrapes.js"
+UpdateFromResult --> "scrapes.js"
+TestScrape --> "scrapes.js"
+
+' scrapes.js uses scrapePackSize for scraping
+"scrapes.js" --> "scrapePackSize.js" : uses scrapePackSize()
+
+' scrapes.js accesses Firestore
+"scrapes.js" --> "ScrapeBatches" : read/write
+"scrapes.js" --> "ScrapeResults" : create/update
+"scrapes.js" --> "Ingredients" : read/update
+
+@enduml
+
+
+@startuml
+
+actor "Browser/Client" as Client
+
+node "Web Server (Express)" {
+  component "scrapes.js" {
+    [uses firebase-admin]
+  }
+
+  component "scrapePackSize.js" {
+    [uses puppeteer-extra]
+  }
+}
+
+database "Firestore" {
+  component "ScrapeBatches"
+  component "ScrapeResults"
+  component "Ingredients"
+}
+
+' define route entrypoints
+component "/scrapes/createBatch" as CreateBatch
+component "/scrapes/runBatch" as RunBatch
+component "/scrapes/deleteBatch" as DeleteBatch
+component "/scrapes/reviewScrapes" as ReviewScrapes
+component "/scrapes/ignoreResult" as IgnoreResult
+component "/scrapes/updateFromResult" as UpdateFromResult
+component "/scrapes/test" as TestScrape
+
+' client accesses routes
+Client --> CreateBatch
+Client --> RunBatch
+Client --> DeleteBatch
+Client --> ReviewScrapes
+Client --> IgnoreResult
+Client --> UpdateFromResult
+Client --> TestScrape
+
+' each route handled by scrapes.js
+CreateBatch --> "scrapes.js"
+RunBatch --> "scrapes.js"
+DeleteBatch --> "scrapes.js"
+ReviewScrapes --> "scrapes.js"
+IgnoreResult --> "scrapes.js"
+UpdateFromResult --> "scrapes.js"
+TestScrape --> "scrapes.js"
+
+' scrapes.js uses scrapePackSize for scraping
+"scrapes.js" --> "scrapePackSize.js" : uses scrapePackSize()
+
+' scrapes.js accesses Firestore
+"scrapes.js" --> "ScrapeBatches" : read/write
+"scrapes.js" --> "ScrapeResults" : create/update
+"scrapes.js" --> "Ingredients" : read/update
 
 @enduml
