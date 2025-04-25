@@ -1,0 +1,36 @@
+@startuml  n
+
+node "Web Server (Express)" {
+  RECTANGLE scrapes.js
+  RECTANGLE scrapePackSize.js
+}
+
+database "Firestore" {
+  RECTANGLE ScrapeBatches
+  RECTANGLE ScrapeResults
+  RECTANGLE Ingredients
+}
+
+rectangle "scrapes createBatch" as CreateBatch
+rectangle "/scrapes/runBatch" as RunBatch
+rectangle "/scrapes/deleteBatch" as DeleteBatch
+rectangle "/scrapes/reviewScrapes" as ReviewScrapes
+rectangle "/scrapes/ignoreResult" as IgnoreResult
+rectangle "/scrapes/updateFromResult" as UpdateFromResult
+rectangle "/scrapes/test" as TestScrape
+
+CreateBatch --> scrapes.js : POST handler
+RunBatch --> scrapes.js : GET handler
+DeleteBatch --> scrapes.js : POST handler
+ReviewScrapes --> scrapes.js : GET handler
+IgnoreResult --> scrapes.js : POST handler
+UpdateFromResult --> scrapes.js : POST handler
+TestScrape --> scrapes.js : GET or POST
+
+scrapes.js --> scrapePackSize.js : calls scrapePackSize()
+
+scrapes.js --> ScrapeBatches : reads/writes batches
+scrapes.js --> ScrapeResults : creates/updates results
+scrapes.js --> Ingredients : reads/updates ingredient data
+
+@enduml

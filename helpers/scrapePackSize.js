@@ -52,7 +52,7 @@ async function scrapePackSize(url) {
 
     try {
       response = await page.goto(url, {
-        waitUntil: "networkidle2", // wait until no traffci
+        waitUntil: "networkidle2", // wait until no traffic
         timeout: 20000, // wait a long time for the load
       });
 
