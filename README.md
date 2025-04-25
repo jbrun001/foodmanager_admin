@@ -1,6 +1,13 @@
 # README for food manager admin
 
-# container deploy using docker
+foodmanager_admin is the admin interface for foodmanger. It is written in node.js and is designed to be deployed in a docker container, because it uses puppeteer which requires chromium to be installed. The dockerfile contains all the image details and additional requirements.
+
+the node modules used in this project are (for local development)
+```bash
+npm install dotenv firebase firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf string-similarity google-auth-library puppeteer puppeteer-extra puppeteer-extra-plugin-stealth
+```
+
+# Container deploy using docker instructions
 
 # Google Cloud Run Deployment
 
@@ -99,117 +106,3 @@ gcloud auth configure-docker europe-west2-docker.pkg.dev
 gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=foodmanager-admin" \
   --project=foodmanager-f117f --limit=50 --format="value(textPayload)"
 ```
-
-
-# local install
-This is the readme containing installation instructions 
-
-# Initial Installation
-These installation instructions are for deployment to a linux environment.
-
-## Install process 
-
-### node and modules
-
-`sudo apt-get update`
-
-`sudo apt install nodejs`
-
-`sudo apt install npm`
-
-`wget https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh`
-
-`bash ./install.sh`
-
-disconnect and log back in
-
-`nvm install v16.17.0`
-
-`node --version` 
-
-`sudo apt install git`
-
-`mkdir project`
-
-`cd project`
-
-`git clone https://github.com/jbrun001/foodmanager_admin`
-
-`cd foodmanager_admin`
-
-`npm init`
-
-### .env configuration file
-use nano to create .env file (contains security details so not synced with git) the required entries in the .env file are listed below
-
-`# this should be true if you are hosting the database locally i.e. localhost`
-
-`LOCAL_DB=true`
-
-`# this is the name of the local database (localhost)`
-`LOCAL_HOST=localhost`
-
-`# this is the database user with access to just the portfolio database this MUST BE ENTERED`
-
-`LOCAL_USER=`
-`# this is the password for the user above  MUST BE ENTERED`
-`LOCAL_PASSWORD=`
-
-`# this is the name of the database for the app - don't change this`
-
-`LOCAL_DATABASE=`
-
-`# this should be true if your system is live on a web server`
-
-`LIVE_SYSTEM=true`
-
-`# this is a complex string used as the session secret it can be anything but suggest it is complex and at least 30 chars`
-
-`SESSION_SECRET=`
-
-`# this is the session name - it can be anything but it is better that it doesn't identify your application`
-
-`SESSION_NAME=`
-
-`# this is the production URL on the live server do not include 
-the / at the end`
-
-`PRODUCTION_URL=`
-
-
-`npm install dotenv firebase firebase-admin express express-session ejs bcrypt express-validator express-sanitizer request express-rate-limit csurf string-similarity google-auth-library puppeteer puppeteer-extra puppeteer-extra-plugin-stealth`
-
-### forever
-
-`sudo apt install -g forever`
-
-`forever start index.js`
-
-to stop the application
-
-`forever stop index.js`
-
-# hardware and software requirements
-
-Disk for install of libraries and dependencies: 1Gb - this may vary depending on your target platform treat this as a minimum.
-
-Disk for application code: 100Mib
-
-O/S: Ubuntu 18.04.6 LTS or higher 
-
-Architecture: x86_64 (64-bit support required)
-
-Processor: Intel Core Processor, Broadwell generation or later
-
-Cores: At least 1 core (Note: More cores are recommended for improved performance)
-
-Threads per Core: At least 1
-
-Virtualization Support: If running in a virtualized environment, a hypervisor supporting full virtualization (e.g., KVM) is required.
-
-CPU Frequency: Minimum 2.0 GHz 
-
-Cache: Minimum L1 cache of 32K for data and 32K for instructions, L2 cache of 4096K (4MB)
-
-Memory: minimum 512MB (for O/S and just this application running)
-
