@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body>
+        <%- include('headerMenu') %>
+        <main class="content">
+        <h1>Recipe Tools</h1>
+            <div class="card-grid">
+
+                <a href="/recipes/search" class="card">
+                <i class="material-icons card-icon">search</i>
+                <div class="card-title">Search/Edit Recipes</div>
+                <p class="card-desc">Search recipes and edit their details.</p>
+                </a>
+
+                <a href="/recipes/add/form" class="card">
+                <i class="material-icons card-icon">restaurant_menu</i>
+                <div class="card-title">Add Recipe</div>
+                <p class="card-desc">Add a new recipe using a guided form.</p>
+                </a>
+
+                <a href="/recipes/add" class="card">
+                <i class="material-icons card-icon">code</i>
+                <div class="card-title">Add Recipe JSON</div>
+                <p class="card-desc">Manually paste JSON to add recipes.</p>
+                </a>
+
+                <a href="/recipes/fixThumbnails" class="card">
+                <i class="material-icons card-icon">photo</i>
+                <div class="card-title">Fix Thumbnails</div>
+                <p class="card-desc">Find and fix missing or broken recipe thumbnails.</p>
+                </a>
+
+            </div>
+        </main>
+        <%- include('footerMenu') %>
+    </body>
+</html>

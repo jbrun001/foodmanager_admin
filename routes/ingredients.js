@@ -6,6 +6,12 @@ const { redirectLogin } = require('../helpers/redirectLogin');
 const stringSimilarity = require('string-similarity'); 
 
 
+router.get('/', redirectLogin, (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  res.render('ingredientsIndex', { loggedInStatus });
+});
+
+
 // lists all the ingredients with a blank MOQ URL and a link to an edit page
 // so it's easier to do the data entry for this information
 // and to check if any ingredients are missing this data

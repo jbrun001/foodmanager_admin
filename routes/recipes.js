@@ -4,6 +4,12 @@ const db = require('../firebaseAdmin');
 const { redirectLogin } = require('../helpers/redirectLogin');
 const { getLoggedInUser } = require('../helpers/getLoggedInUser');
 
+router.get('/', redirectLogin, (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  res.render('recipesIndex', { loggedInStatus });
+});
+
+
 // Recipe input page
 router.get('/add', redirectLogin, (req, res) => {
   const loggedInStatus = getLoggedInUser(req);

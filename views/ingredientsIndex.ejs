@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+    <body>
+        <%- include('headerMenu') %>
+        <main class="content">
+        <h1>Ingredient Management</h1>
+            <div class="card-grid">
+                <a href="/ingredients/review-moqs" class="card">
+                <i class="material-icons card-icon">bar_chart</i>
+                <div class="card-title">Update Blank MOQs</div>
+                <p class="card-desc">Fill in missing Minimum Order Quantities for ingredients.</p>
+                </a>
+
+                <a href="/ingredients/reviewDuplicates" class="card">
+                <i class="material-icons card-icon">compare_arrows</i>
+                <div class="card-title">De-dupe Ingredients</div>
+                <p class="card-desc">Review and merge similar ingredient entries.</p>
+                </a>
+
+                <a href="/ingredients/cleanupUnused" class="card">
+                <i class="material-icons card-icon">inventory_2</i>
+                <div class="card-title">Unused Ingredients</div>
+                <p class="card-desc">Identify and optionally delete unused ingredients.</p>
+                </a>
+                
+                <a href="/ingredients/updateIngredients" class="card">
+                <i class="material-icons card-icon" style="color: orange">warning</i>
+                <div class="card-title">Auto Create Ingredients</div>
+                <p class="card-desc">Warning: this creates/overwrites ingredients from recipe data. Once clicked you cant abort this.</p>
+                </a>
+
+            </div>
+        </main>
+        <%- include('footerMenu') %>
+    </body>
+</html>

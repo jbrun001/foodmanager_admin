@@ -447,6 +447,49 @@ h1 {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transform: translateY(-4px);
+}
+
+.card-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+    color: var(--background-colour);
+}
+
+.card-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.card-desc {
+    font-size: 0.95rem;
+    color: #666;
+}
+
 @media screen and (max-width: 768px) {          /* for mobile screens smaller than 768px */
     .content {
         left: 0;                                /* remove left offset (menu width) */
