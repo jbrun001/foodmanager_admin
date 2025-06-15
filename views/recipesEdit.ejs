@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= isAddMode ? 'Add New Recipe' : 'Edit Recipe - ' + recipe.title %></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<%- include('headerMenu') %>
+
+<div class="content">
+  <div class="form-container">
+    <h1><%= isAddMode ? 'Add New Recipe' : 'Edit Recipe: ' + recipe.title %></h1>
+
+    <form method="POST" action="<%= isAddMode ? '/recipes/add/form' : '/recipes/edit/' + recipe.id %>">
+      <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+
+      <label>Title</label>
+      <input type="text" name="title" value="<%= recipe.title %>" required>
+
+      <label>Thumbnail URL</label>
+      <input type="text" name="thumbnail" value="<%= recipe.thumbnail %>">
+
+      <label>Image URL</label>
+      <input type="text" name="image" value="<%= recipe.image %>">
+
+      <label>Description</label>
+      <textarea name="description"><%= recipe.description %></textarea>
+
+      <label>Cook Time (min)</label>
+      <input type="number" name="cooktime" value="<%= recipe.cooktime %>">
+
+      <label>Prep Time (min)</label>
+      <input type="number" name="preptime" value="<%= recipe.preptime %>">
+
+      <label>Calories</label>
+      <input type="number" name="calories" value="<%= recipe.calories %>">
+
+      <label>Portions</label>
+      <input type="number" name="portions" value="<%= recipe.portions %>">
+
+      <label>Cuisine</label>
+      <input type="text" name="cusine" value="<%= recipe.cusine %>">
+
+      <label>Category</label>
+      <input type="text" name="category" value="<%= recipe.category %>">
+
+      <label>Keywords (comma-separated)</label>
+      <input type="text" name="keywords" value="<%= recipe.keywords %>">
+
+      <h3>Ingredients</h3>
+      <div id="ingredients-list">
+        <% recipe.ingredients.forEach((ingredient, index) => { %>
+          <div class="ingredient-row">
+            <input type="hidden" name="ingredients[<%= index %>][ingredient_id]" value="<%= ingredient.ingredient_id %>">
+            <label>Name: <input type="text" name="ingredients[<%= index %>][ingredient_name]" value="<%= ingredient.ingredient_name %>"></label>
+            <label>Amount: <input type="number" step="any" name="ingredients[<%= index %>][amount]" value="<%= ingredient.amount %>"></label>
+            <label>Unit: <input type="text" name="ingredients[<%= index %>][unit]" value="<%= ingredient.unit %>"></label>
+            <button type="button" onclick="this.parentNode.remove()">Remove</button>
+          </div>
+        <% }) %>
+      </div>
+      <button type="button" onclick="addIngredient()">+ Add Ingredient</button>
+
+      <h3>Method</h3>
+      <div id="method-list">
+        <% recipe.method.forEach((step, index) => { %>
+          <div class="method-step">
+            <label>Step <%= index + 1 %>:</label>
+            <textarea name="method[<%= index %>][step]"><%= step.step %></textarea>
+            <input type="text" name="method[<%= index %>][image]" placeholder="Optional image URL" value="<%= step.image %>">
+            <button type="button" onclick="this.parentNode.remove()">Remove</button>
+          </div>
+        <% }) %>
+      </div>
+      <button type="button" onclick="addStep()">+ Add Step</button>
+
+      <h3>Additional Ingredients</h3>
+      <textarea name="additional_ingredients"><%= recipe.additional_ingredients ? recipe.additional_ingredients.join(', ') : '' %></textarea>
+
+      <% if (messages.length > 0) { %>
+        <ul>
+          <% messages.forEach(msg => { %>
+            <li><%= msg.message %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <button type="submit" class="submit-button"><%= isAddMode ? 'Add Recipe' : 'Save Changes' %></button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function addIngredient() {
+    const container = document.getElementById('ingredients-list');
+    const index = container.children.length;
+    const div = document.createElement('div');
+    div.className = 'ingredient-row';
+    div.innerHTML = `
+      <input type="hidden" name="ingredients[${index}][ingredient_id]" value="">
+      <label>Name: <input type="text" name="ingredients[${index}][ingredient_name]" value=""></label>
+      <label>Amount: <input type="number" step="any" name="ingredients[${index}][amount]" value=""></label>
+      <label>Unit: <input type="text" name="ingredients[${index}][unit]" value=""></label>
+      <button type="button" onclick="this.parentNode.remove()">Remove</button>
+    `;
+    container.appendChild(div);
+  }
+
+  function addStep() {
+    const container = document.getElementById('method-list');
+    const index = container.children.length;
+    const div = document.createElement('div');
+    div.className = 'method-step';
+    div.innerHTML = `
+      <label>Step ${index + 1}:</label>
+      <textarea name="method[${index}][step]"></textarea>
+      <input type="text" name="method[${index}][image]" placeholder="Optional image URL">
+      <button type="button" onclick="this.parentNode.remove()">Remove</button>
+    `;
+    container.appendChild(div);
+  }
+</script>
+
+<%- include('footerMenu') %>
+</body>
+</html>

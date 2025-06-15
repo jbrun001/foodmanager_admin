@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Recipes</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<%- include('headerMenu') %>
+
+<div class="content">
+  <div class="form-container">
+    <h1>Search Recipes</h1>
+    <form method="POST">
+      <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+      <input type="text" name="query" value="<%= query %>" placeholder="Search by title, ingredient or keyword" style="width: 70%">
+      <button type="submit">Search</button>
+    </form>
+
+    <% if (results.length > 0) { %>
+      <h2>Results:</h2>
+      <ul>
+        <% results.forEach(recipe => { %>
+          <li style="margin: 10px 0;">
+            <% if (recipe.thumbnail) { %>
+              <img src="<%= recipe.thumbnail %>" alt="thumb" style="height: 50px; vertical-align: middle;">
+            <% } %>
+            <strong><%= recipe.title %></strong>
+            — <a href="/recipes/edit/<%= recipe.id %>">Edit</a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else if (query) { %>
+      <p>No results found for "<strong><%= query %></strong>"</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('footerMenu') %>
+</body>
+</html>

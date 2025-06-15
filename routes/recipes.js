@@ -101,7 +101,7 @@ router.post('/add', redirectLogin, async (req, res) => {
       field: 'invalid',
       message: `Recipe "${bad.title}" skipped — ${bad.reason}`
     });
-    });
+  });
 }
 
 return res.render('recipesAdd', {
@@ -109,8 +109,92 @@ return res.render('recipesAdd', {
     crsfToken: req.csrfToken(),
     previousData: '',
     messages
-});
   });
+});
+
+router.get('/add/form', redirectLogin, (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  res.render('recipesEdit', {
+    loggedInStatus,
+    crsfToken: req.csrfToken(),
+    recipe: {
+      title: '',
+      thumbnail: '',
+      image: '',
+      description: '',
+      cooktime: '',
+      preptime: '',
+      calories: '',
+      portions: '',
+      cusine: '',
+      category: '',
+      keywords: '',
+      ingredients: [],
+      method: [],
+      additional_ingredients: []
+    },
+    messages: [],
+    isAddMode: true
+  });
+});
+
+
+router.post('/add/form', redirectLogin, async (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  try {
+    const newRecipe = {
+      title: req.body.title,
+      thumbnail: req.body.thumbnail,
+      image: req.body.image,
+      description: req.body.description,
+      cooktime: parseInt(req.body.cooktime),
+      preptime: parseInt(req.body.preptime),
+      calories: parseInt(req.body.calories),
+      portions: parseInt(req.body.portions),
+      cusine: req.body.cusine,
+      category: req.body.category,
+      keywords: req.body.keywords,
+      ingredients: Array.isArray(req.body.ingredients) ? req.body.ingredients.map(i => ({
+        ingredient_id: parseInt(i.ingredient_id),
+        ingredient_name: i.ingredient_name,
+        amount: parseFloat(i.amount),
+        unit: i.unit
+      })) : [],
+      method: Array.isArray(req.body.method) ? req.body.method.map(m => ({
+        step: m.step,
+        image: m.image || ''
+      })) : [],
+      additional_ingredients: req.body.additional_ingredients
+        ? req.body.additional_ingredients.split(',').map(s => s.trim())
+        : []
+    };
+
+    const existing = await db.collection('recipes').where('title', '==', newRecipe.title).limit(1).get();
+    if (!existing.empty) {
+      return res.render('recipesEdit', {
+        loggedInStatus,
+        crsfToken: req.csrfToken(),
+        recipe: newRecipe,
+        isAddMode: true,
+        messages: [{ field: 'duplicate', message: 'Recipe with this title already exists' }]
+      });
+    }
+
+    await db.collection('recipes').add(newRecipe);
+
+    res.render('recipesEdit', {
+      loggedInStatus,
+      crsfToken: req.csrfToken(),
+      recipe: newRecipe,
+      isAddMode: true,
+      messages: [{ field: 'success', message: 'New recipe added successfully' }]
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to add recipe');
+  }
+});
+
 
 router.get('/fixThumbnails', redirectLogin, async (req, res) => {
   const loggedInStatus = getLoggedInUser(req);
@@ -164,6 +248,119 @@ router.post('/fixThumbnails/:recipeId', redirectLogin, async (req, res) => {
     res.status(500).send('Failed to update recipe thumbnails.');
   }
 });
+
+// In routes/recipes.js
+
+router.get('/edit/:id', redirectLogin, async (req, res) => {
+  const recipeId = req.params.id;
+  const loggedInStatus = getLoggedInUser(req);
+
+  try {
+    const doc = await db.collection('recipes').doc(recipeId).get();
+    if (!doc.exists) return res.status(404).send('Recipe not found');
+
+    const recipe = doc.data();
+    recipe.id = doc.id;
+    res.render('recipesEdit', {
+      loggedInStatus,
+      crsfToken: req.csrfToken(),
+      recipe,
+      messages: [],
+      isAddMode: false  
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error retrieving recipe');
+  }
+});
+
+router.post('/edit/:id', redirectLogin, async (req, res) => {
+  const recipeId = req.params.id;
+  const loggedInStatus = getLoggedInUser(req);
+
+  try {
+    const updatedRecipe = {
+      title: req.body.title,
+      thumbnail: req.body.thumbnail,
+      image: req.body.image,
+      description: req.body.description,
+      cooktime: parseInt(req.body.cooktime),
+      preptime: parseInt(req.body.preptime),
+      calories: parseInt(req.body.calories),
+      portions: parseInt(req.body.portions),
+      cusine: req.body.cusine,
+      category: req.body.category,
+      keywords: req.body.keywords,
+      ingredients: Array.isArray(req.body.ingredients) ? req.body.ingredients.map(i => ({
+        ingredient_id: parseInt(i.ingredient_id),
+        ingredient_name: i.ingredient_name,
+        amount: parseFloat(i.amount),
+        unit: i.unit
+      })) : [],
+      method: Array.isArray(req.body.method) ? req.body.method.map(m => ({
+        step: m.step,
+        image: m.image || ''
+      })) : [],
+      additional_ingredients: req.body.additional_ingredients
+        ? req.body.additional_ingredients.split(',').map(s => s.trim())
+        : []
+    };
+
+    await db.collection('recipes').doc(recipeId).set(updatedRecipe, { merge: true });
+
+    res.render('recipesEdit', {
+      loggedInStatus,
+      crsfToken: req.csrfToken(),
+      recipe: updatedRecipe,
+      messages: [{ field: 'success', message: 'Recipe updated successfully' }],
+      isAddMode: false  
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to update recipe');
+  }
+});
+
+router.get('/search', redirectLogin, (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  res.render('recipesSearch', {
+    loggedInStatus,
+    crsfToken: req.csrfToken(),
+    results: [],
+    query: ''
+  });
+});
+
+router.post('/search', redirectLogin, async (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  const query = req.body.query.trim().toLowerCase();
+  const snapshot = await db.collection('recipes').get();
+
+  const results = [];
+
+  snapshot.forEach(doc => {
+    const recipe = doc.data();
+    const title = recipe.title.toLowerCase();
+    const keywords = (recipe.keywords || '').toLowerCase();
+    const ingredients = (recipe.ingredients || []).map(i => i.ingredient_name.toLowerCase()).join(', ');
+
+    if (title.includes(query) || keywords.includes(query) || ingredients.includes(query)) {
+      results.push({
+        id: doc.id,
+        title: recipe.title,
+        thumbnail: recipe.thumbnail || '',
+      });
+    }
+  });
+
+  res.render('recipesSearch', {
+    loggedInStatus,
+    crsfToken: req.csrfToken(),
+    results,
+    query: req.body.query
+  });
+});
+
 
 
 module.exports = router;
