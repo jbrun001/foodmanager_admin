@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Storage Advice: <%= typeId %></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+  <%- include('headerMenu') %>
+  <main class="content">
+    <h1>Edit Storage Advice: <%= typeId %></h1>
+
+    <form method="POST" action="/storageAdvice/edit/<%= typeId %>" onsubmit="return prepareSubmission();">
+      <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+      <input type="hidden" name="entriesJson" id="entriesJson">
+
+      <label for="generalAdvice"><strong>General Advice:</strong></label><br>
+      <textarea name="generalAdvice" id="generalAdvice" rows="3" style="width: 100%;"><%= generalAdvice %></textarea>
+
+      <h2>Specific Ingredient Advice</h2>
+      <table class="table" id="entriesTable">
+        <thead>
+          <tr>
+            <th>Ingredient</th>
+            <th>Advice</th>
+            <th>Test</th>
+            <th>Life Days</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% entries.forEach((entry, index) => { %>
+            <tr>
+                <td>
+                <input type="text" class="entry-ingredient" list="ingredientList" value="<%= entry.ingredient %>">
+                </td>
+                <td><input type="text" class="entry-advice" value="<%= entry.advice %>"></td>
+                <td><input type="text" class="entry-test" value="<%= entry.test %>"></td>
+                <td><input type="number" class="entry-lifeDays" value="<%= entry.lifeDays %>"></td>
+                <td><button type="button" class="submit-button" removeEntry(this)">Remove</button></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <button type="button"  class="submit-button" onclick="addEntry()">Add Entry</button>
+      <br><br>
+      <button type="submit"  class="submit-button" >Save</button>
+    </form>
+    
+    <!-- this is used to provide the autocomplete  -->
+    <datalist id="ingredientList">
+        <% allIngredients.forEach(name => { %>
+            <option value="<%= name %>"></option>
+        <% }) %>
+    </datalist>
+
+  </main>
+  <%- include('footerMenu') %>
+
+  <script>
+    function addEntry() {
+    const table = document.getElementById('entriesTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    newRow.innerHTML = `
+        <td>
+        <input type="text" class="entry-ingredient" list="ingredientList">
+        </td>
+        <td><input type="text" class="entry-advice"></td>
+        <td><input type="text" class="entry-test"></td>
+        <td><input type="number" class="entry-lifeDays"></td>
+        <td><button type="button" class="submit-button" onclick="removeEntry(this)">Remove</button></td>
+    `;
+    }
+
+    function removeEntry(button) {
+      const row = button.closest('tr');
+      row.remove();
+    }
+
+    function prepareSubmission() {
+      const rows = document.querySelectorAll('#entriesTable tbody tr');
+      const entries = [];
+
+      rows.forEach(row => {
+        const ingredient = row.querySelector('.entry-ingredient').value.trim();
+        const advice = row.querySelector('.entry-advice').value.trim();
+        const test = row.querySelector('.entry-test').value.trim();
+        const lifeDays = parseInt(row.querySelector('.entry-lifeDays').value.trim(), 10) || 0;
+
+        if (ingredient) {
+          entries.push({ ingredient, advice, test, lifeDays });
+        }
+      });
+
+      document.getElementById('entriesJson').value = JSON.stringify(entries);
+      return true;
+    }
+  </script>
+</body>
+</html>

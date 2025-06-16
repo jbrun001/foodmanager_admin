@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Storage Advice Overview</title>        
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+  <%- include('headerMenu') %>
+  <main class="content">
+    <h1>Storage Advice</h1>
+    <p>Select a category below to review or update general and specific advice for ingredients.</p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>General Advice</th>
+          <th>Entries</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% types.forEach(type => { %>
+          <tr>
+            <td><strong><%= type.id %></strong></td>
+            <td><%= type.generalAdvice ? type.generalAdvice.substring(0, 80) + (type.generalAdvice.length > 80 ? "..." : "") : "None" %></td>
+            <td><%= (type.entries || []).length %></td>
+            <td><a href="/storageAdvice/edit/<%= type.id %>">Edit</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <p><em>Note:</em> This data is shared with the Flutter app to help users store ingredients correctly.</p>
+  </main>
+  <%- include('footerMenu') %>
+</body>
+</html>

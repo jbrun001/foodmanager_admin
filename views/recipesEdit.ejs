@@ -17,37 +17,37 @@
       <input type="hidden" name="_csrf" value="<%= crsfToken %>">
 
       <label>Title</label>
-      <input type="text" name="title" value="<%= recipe.title %>" required>
+      <input type="text" name="title" value="<%= recipe.title %>" required style="width: 100%;"><br>
 
       <label>Thumbnail URL</label>
-      <input type="text" name="thumbnail" value="<%= recipe.thumbnail %>">
+      <input type="text" name="thumbnail" value="<%= recipe.thumbnail %>" style="width: 100%;"><br>
 
       <label>Image URL</label>
-      <input type="text" name="image" value="<%= recipe.image %>">
+      <input type="text" name="image" value="<%= recipe.image %>" style="width: 100%;"><br>
 
       <label>Description</label>
-      <textarea name="description"><%= recipe.description %></textarea>
+      <textarea name="description" style="width: 100%;"><%= recipe.description %></textarea><br>
 
       <label>Cook Time (min)</label>
-      <input type="number" name="cooktime" value="<%= recipe.cooktime %>">
+      <input type="number" name="cooktime" value="<%= recipe.cooktime %>"><br>
 
       <label>Prep Time (min)</label>
-      <input type="number" name="preptime" value="<%= recipe.preptime %>">
+      <input type="number" name="preptime" value="<%= recipe.preptime %>"><br>
 
       <label>Calories</label>
-      <input type="number" name="calories" value="<%= recipe.calories %>">
+      <input type="number" name="calories" value="<%= recipe.calories %>"><br>
 
       <label>Portions</label>
-      <input type="number" name="portions" value="<%= recipe.portions %>">
+      <input type="number" name="portions" value="<%= recipe.portions %>"><br>
 
       <label>Cuisine</label>
-      <input type="text" name="cusine" value="<%= recipe.cusine %>">
+      <input type="text" name="cusine" value="<%= recipe.cusine %>"><br>
 
       <label>Category</label>
-      <input type="text" name="category" value="<%= recipe.category %>">
+      <input type="text" name="category" value="<%= recipe.category %>" style="width: 100%;"><br>
 
       <label>Keywords (comma-separated)</label>
-      <input type="text" name="keywords" value="<%= recipe.keywords %>">
+      <input type="text" name="keywords" value="<%= recipe.keywords %>" style="width: 100%;"><br>
 
       <h3>Ingredients</h3>
       <div id="ingredients-list">
@@ -77,7 +77,7 @@
       <button type="button" onclick="addStep()">+ Add Step</button>
 
       <h3>Additional Ingredients</h3>
-      <textarea name="additional_ingredients"><%= recipe.additional_ingredients ? recipe.additional_ingredients.join(', ') : '' %></textarea>
+      <textarea name="additional_ingredients" style="width: 100%;"><%= recipe.additional_ingredients ? recipe.additional_ingredients.join(', ') : '' %></textarea><br>
 
       <% if (messages.length > 0) { %>
         <ul>

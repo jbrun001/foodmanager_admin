@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Food Manager</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<%- include('headerMenu') %>
+
+<div class="content">
+  <div class="form-container">
+    <h1>Edit App Configuration</h1>
+    <form method="POST" action="/config/edit">
+      <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+
+      <h3>App Store Links</h3>
+      <label>Android App URL</label>
+      <input type="text" name="android" value="<%= config.appstores?.android %>" style="width: 100%;"><br>
+
+      <label>iOS App URL</label>
+      <input type="text" name="ios" value="<%= config.appstores?.ios %>" style="width: 100%;"><br>
+
+      <label>Version</label>
+      <input type="text" name="version" value="<%= config.version %>" style="width: 100%;"><br><br>
+
+      <label>Perishable Types (comma-separated)</label>
+      <input type="text" name="perishable_types" value="<%= config.perishable_types?.join(', ') %>" style="width: 100%;">
+
+      <h3>Feature Groups</h3>
+      <div id="feature-groups">
+        <% (config.feature_groups || []).forEach((group, index) => { %>
+          <div class="feature-group" data-index="<%= index %>">
+            <label>Heading</label>
+            <input type="text" name="feature_groups[<%= index %>][heading]" value="<%= group.heading %>" style="width: 100%;"><br>
+
+            <label>Icon</label>
+            <input type="text" name="feature_groups[<%= index %>][icon]" value="<%= group.icon %>" style="width: 100%;"><br>
+
+            <label>Transition</label>
+            <input type="text" name="feature_groups[<%= index %>][transition]" value="<%= group.transition %>" style="width: 100%;"><br>
+
+            <label>Taglines</label>
+            <div class="taglines">
+              <% (group.taglines || []).forEach((tag, tagIndex) => { %>
+                <input type="text" name="feature_groups[<%= index %>][taglines][<%= tagIndex %>]" value="<%= tag %>" style="width: 100%;"><br>
+              <% }) %>
+            </div>
+            <button type="button" class="submit-button" onclick="addTagline(this)">+ Add Tagline</button>
+            <button type="button" class="submit-button" onclick="removeFeatureGroup(this)">Remove Group</button>
+            <hr>
+          </div>
+        <% }) %>
+      </div>
+
+      <button type="button" class="submit-button" onclick="addFeatureGroup()">+ Add Feature Group</button>
+
+      <% if (messages.length > 0) { %>
+        <ul>
+          <% messages.forEach(msg => { %>
+            <li><%= msg.message %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <br><br><button type="submit" class="submit-button">Save Configuration</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function addFeatureGroup() {
+  const container = document.getElementById('feature-groups');
+
+  // Find the last used index to avoid duplicates
+  const lastIndex = [...container.querySelectorAll('.feature-group')].reduce((max, div) => {
+    const i = parseInt(div.dataset.index, 10);
+    return isNaN(i) ? max : Math.max(max, i);
+  }, -1);
+
+  const newIndex = lastIndex + 1;
+  console.log('Adding new feature group with index:', newIndex);
+
+  const div = document.createElement('div');
+  div.className = 'feature-group';
+  div.dataset.index = newIndex;
+
+  div.innerHTML = `
+    <label>Heading</label>
+    <input type="text" name="feature_groups[${newIndex}][heading]" value="" style="width: 100%;"><br>
+
+    <label>Icon</label>
+    <input type="text" name="feature_groups[${newIndex}][icon]" value="" style="width: 100%;"><br>
+
+    <label>Transition</label>
+    <input type="text" name="feature_groups[${newIndex}][transition]" value="" style="width: 100%;"><br>
+
+    <label>Taglines</label>
+    <div class="taglines">
+      <input type="text" name="feature_groups[${newIndex}][taglines][0]" value="" style="width: 100%;"><br>
+    </div>
+    <button type="button" class="submit-button" onclick="addTagline(this)">+ Add Tagline</button>
+    <button type="button" class="submit-button" onclick="removeFeatureGroup(this)">Remove Group</button>
+    <hr>
+  `;
+
+  container.appendChild(div);
+}
+
+
+function addTagline(button) {
+  const group = button.closest('.feature-group');
+  const taglinesDiv = group.querySelector('.taglines');
+
+  // Only count actual <input> elements to get the correct index
+  const index = taglinesDiv.querySelectorAll('input').length;
+  const groupIndex = group.dataset.index;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.name = `feature_groups[${groupIndex}][taglines][${index}]`;
+  input.value = '';
+
+  console.log(`Adding tagline to group ${groupIndex} at taglines[${index}]`);
+  taglinesDiv.appendChild(input);
+}
+
+
+  function removeFeatureGroup(button) {
+    const group = button.closest('.feature-group');
+    group.remove();
+  }
+</script>
+
+<%- include('footerMenu') %>
+
+</body>
+</html>

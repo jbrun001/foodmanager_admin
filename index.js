@@ -113,6 +113,12 @@ app.use('/reports', csrfProtection, reportsRoutes);
 const scrapeRoutes = require('./routes/scrapes');
 app.use('/scrapes', csrfProtection, scrapeRoutes);
 
+const configRoutes = require('./routes/config');
+app.use('/config', csrfProtection, configRoutes);
+
+const storageAdviceRoutes = require('./routes/storageAdvice');
+app.use('/storageAdvice', csrfProtection, storageAdviceRoutes);
+
  // security. if the user is posting a form that has a cross site request forgery
  // token in it and that is not valid (session has expired / they are using a page
  // that has been loaded a long time ago / they are attempting a cross site request

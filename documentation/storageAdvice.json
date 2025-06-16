@@ -1,0 +1,212 @@
+[
+  {
+    "id": "vegetable",
+    "generalAdvice": "Store vegetables in the crisper drawer of the fridge in breathable bags. Wash only before use to reduce spoilage.",
+    "entries": [
+      {
+        "ingredient": "Pak Choi",
+        "advice": "Keep refrigerated and use within a few days.",
+        "test": "Wilting or yellowing leaves.",
+        "lifeDays": 3
+      },
+      {
+        "ingredient": "Baby Leaf Salad",
+        "advice": "Store in airtight container with paper towel.",
+        "test": "Sliminess or soggy texture.",
+        "lifeDays": 2
+      },
+      {
+        "ingredient": "Beetroot",
+        "advice": "Keep in a cool, dry place or fridge.",
+        "test": "Softness or shriveling.",
+        "lifeDays": 10
+      },
+      {
+        "ingredient": "Broccoli",
+        "advice": "Refrigerate in breathable bag.",
+        "test": "Yellowing florets, limp stems.",
+        "lifeDays": 5
+      },
+      {
+        "ingredient": "Butternut Squash Cubes",
+        "advice": "Refrigerate, use within a few days.",
+        "test": "Mushiness or odor.",
+        "lifeDays": 3
+      },
+      {
+        "ingredient": "Carrot",
+        "advice": "Refrigerate in a container with water (optional).",
+        "test": "Bending or rubbery texture.",
+        "lifeDays": 7
+      },
+      {
+        "ingredient": "Carrot & Cabbage Slaw Mix",
+        "advice": "Store in original packaging, sealed.",
+        "test": "Browning or soggy.",
+        "lifeDays": 3
+      },
+      {
+        "ingredient": "Cherry Tomatoes",
+        "advice": "Room temp away from sun, refrigerate if overripe.",
+        "test": "Wrinkling or mold.",
+        "lifeDays": 5
+      },
+      {
+        "ingredient": "Chestnut Mushrooms",
+        "advice": "Store in paper bag in fridge.",
+        "test": "Slimy or dark spots.",
+        "lifeDays": 4
+      },
+      {
+        "ingredient": "Chopped Tomato",
+        "advice": "Refrigerate in sealed container after opening.",
+        "test": "Mold or sour smell.",
+        "lifeDays": 3
+      }
+    ]
+  },
+  {
+    "id": "legumes",
+    "generalAdvice": "Store canned or dried legumes in a cool, dry place. After opening, refrigerate and use within days.",
+    "entries": [
+      {
+        "ingredient": "Chickpeas",
+        "advice": "If canned, refrigerate in sealed container.",
+        "test": "Sour smell, mold.",
+        "lifeDays": 3
+      },
+      {
+        "ingredient": "Green Lentils",
+        "advice": "Store dry in airtight container. Cooked: fridge.",
+        "test": "Smell or visible mold.",
+        "lifeDays": 4
+      }
+    ]
+  },
+  {
+    "id": "fruit",
+    "generalAdvice": "Keep fruit in a cool place or refrigerate for longer freshness. Wash just before eating.",
+    "entries": [
+      {
+        "ingredient": "Lemon",
+        "advice": "Store in fridge crisper.",
+        "test": "Wrinkled or soft.",
+        "lifeDays": 14
+      },
+      {
+        "ingredient": "Lime",
+        "advice": "Refrigerate or store cool.",
+        "test": "Soft spots, dryness.",
+        "lifeDays": 10
+      },
+      {
+        "ingredient": "Lemongrass Stalks",
+        "advice": "Wrap and refrigerate in crisper.",
+        "test": "Dry or shriveled stalk.",
+        "lifeDays": 7
+      },
+      {
+        "ingredient": "Dried Lime Leaf",
+        "advice": "Store in dry, airtight jar.",
+        "test": "Loss of aroma.",
+        "lifeDays": 180
+      }
+    ]
+  },
+  {
+    "id": "dairy",
+    "generalAdvice": "Keep dairy products refrigerated below 5°C. Check best-before dates and avoid cross-contamination.",
+    "entries": [
+      {
+        "ingredient": "Cheddar Cheese",
+        "advice": "Wrap in wax paper, refrigerate.",
+        "test": "Mold or strong smell.",
+        "lifeDays": 7
+      },
+      {
+        "ingredient": "Feta",
+        "advice": "Submerge in brine, keep cold.",
+        "test": "Sliminess or sour smell.",
+        "lifeDays": 5
+      },
+      {
+        "ingredient": "Mayonnaise",
+        "advice": "Refrigerate after opening.",
+        "test": "Oil separation or smell.",
+        "lifeDays": 30
+      },
+      {
+        "ingredient": "Natural Yogurt",
+        "advice": "Store sealed in fridge.",
+        "test": "Liquid separation or mold.",
+        "lifeDays": 7
+      },
+      {
+        "ingredient": "Soft Goat Cheese",
+        "advice": "Keep sealed and cold.",
+        "test": "Mold or unpleasant odor.",
+        "lifeDays": 5
+      }
+    ]
+  },
+  {
+    "id": "meat",
+    "generalAdvice": "Store raw meat on the bottom shelf of the fridge, sealed. Use or freeze before the use-by date.",
+    "entries": [
+      {
+        "ingredient": "Chicken Breast",
+        "advice": "Refrigerate, sealed, use within 2 days.",
+        "test": "Sour odor, slimy texture.",
+        "lifeDays": 2
+      },
+      {
+        "ingredient": "Chicken Thigh Fillets",
+        "advice": "Keep in sealed pack, refrigerate.",
+        "test": "Odor or grey color.",
+        "lifeDays": 2
+      },
+      {
+        "ingredient": "Pork Loin Steak",
+        "advice": "Refrigerate or freeze promptly.",
+        "test": "Smell, discoloration.",
+        "lifeDays": 3
+      },
+      {
+        "ingredient": "Pork Mince",
+        "advice": "Store cold, cook thoroughly.",
+        "test": "Odor or browning.",
+        "lifeDays": 1
+      },
+      {
+        "ingredient": "Beef Mince",
+        "advice": "Refrigerate, cook within 1 day.",
+        "test": "Sour smell or discoloration.",
+        "lifeDays": 1
+      }
+    ]
+  },
+  {
+    "id": "fish",
+    "generalAdvice": "Fish is highly perishable. Keep refrigerated and use within 1–2 days, or freeze immediately after purchase.",
+    "entries": [
+      {
+        "ingredient": "Basa Fillet",
+        "advice": "Keep very cold or freeze.",
+        "test": "Fishy smell, soft texture.",
+        "lifeDays": 2
+      },
+      {
+        "ingredient": "Haddock",
+        "advice": "Store on ice or coldest fridge shelf.",
+        "test": "Dull eyes, mushy flesh.",
+        "lifeDays": 2
+      },
+      {
+        "ingredient": "Sea Bass Fillet",
+        "advice": "Wrap tightly, refrigerate, use quickly.",
+        "test": "Sour odor, opaque flesh.",
+        "lifeDays": 2
+      }
+    ]
+  }
+]
