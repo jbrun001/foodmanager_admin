@@ -31,13 +31,13 @@ router.get('/review-moqs', redirectLogin, async (req, res, next) => {
       // loop through each MOQ in this Ingredient
       moqs.forEach((moq, index) => {
         // is the URL blank?
-        if (!moq.URL || moq.URL.trim() === '') {
-          // push this moq information into our results
+        if (!moq.URL || moq.URL.trim() === '' || !moq.price || moq.price == 0) {
           ingredientsWithBlankURLs.push({
-            ingredientId: doc.id,           // add doc.id will need when we updating
-            ingredientName: data.name,      // add ingredient name will need this for display
-            moqIndex: index,                // add index, will need this when updating
-            ...moq                          // spread - include all other fields from MOQ
+            ingredientId: doc.id,
+            ingredientName: data.name,
+            moqIndex: index,
+            price: moq.price || 0,  // default to 0 if missing
+            ...moq
           });
         }
       });
@@ -83,7 +83,7 @@ router.get('/edit-moq/:ingredientId/:moqIndex', redirectLogin, async (req, res, 
 router.post('/edit-moq/:ingredientId/:moqIndex', redirectLogin, async (req, res, next) => {
   try {
     const { ingredientId, moqIndex } = req.params;
-    const { URL, amount, storeName, units } = req.body;
+    const { URL, amount, storeName, units, price } = req.body;
     // search for ingredientId and store the database reference
     const docRef = db.collection('Ingredients').doc(ingredientId);
     // get the whole ingredient document (including MOQ)
@@ -95,16 +95,16 @@ router.post('/edit-moq/:ingredientId/:moqIndex', redirectLogin, async (req, res,
     // make sure the number we were passed in an integer
     const index = parseInt(moqIndex);
 
-   
-    // Update the specific MOQ entry at the specified index
+       // Update the specific MOQ entry at the specified index
     // use ... (spread) to create a copy of the original then overwrite
     // with the specified values (so any other original fields stay the same)
     moqs[index] = {
-      ...moqs[index],           // spread
+      ...moqs[index],
       URL,
       amount: parseFloat(amount),
       storeName,
-      units
+      units,
+      price: parseFloat(price) || 0
     };
 
     // save the MOQ including changes back to database

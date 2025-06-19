@@ -13,40 +13,39 @@
         <h1>Review Ingredients with Missing MOQ URLs</h1>
       
         <div style="overflow-x:auto;">
-          <table class="table table-striped" style="min-width: 600px; width: 100%;">
+          <table class="table-striped" style="min-width: 600px; width: 100%;">
             <thead>
               <tr>
+                <th>Action</th>
                 <th>Ingredient</th>
                 <th>Store</th>
                 <th>Amount</th>
                 <th>Units</th>
+                <th>Price</th>
                 <th>URL</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <% ingredients.forEach(item => { %>
                 <tr>
+                  <td>
+                    <a 
+                      href="/ingredients/edit-moq/<%= item.ingredientId %>/<%= item.moqIndex %>" 
+                      class="submit-button">
+                      Edit
+                    </a>
+                  </td>
                   <td><%= item.ingredientName %></td>
                   <td><%= item.storeName %></td>
                   <td><%= item.amount %></td>
                   <td><%= item.units %></td>
+                  <td>£<%= item.price ? item.price.toFixed(2) : '0.00' %></td>
                   <td>
                     <% if (!item.URL || item.URL.trim() === '') { %>
                       <span class="text-danger">[missing]</span>
                     <% } else { %>
                       <%= item.URL %>
                     <% } %>
-                  </td>
-                  <td>
-                    <td>
-                      <a 
-                        href="/ingredients/edit-moq/<%= item.ingredientId %>/<%= item.moqIndex %>" 
-                        class="btn btn-sm btn-primary edit-link">
-                        Edit
-                      </a>
-                    </td>
-                    
                   </td>
                 </tr>
               <% }) %>

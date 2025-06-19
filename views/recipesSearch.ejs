@@ -15,27 +15,39 @@
     <form method="POST">
       <input type="hidden" name="_csrf" value="<%= crsfToken %>">
       <input type="text" name="query" value="<%= query %>" placeholder="Search by title, ingredient or keyword" style="width: 70%">
-      <button type="submit">Search</button>
+      <button type="submit" class="submit-button">Search</button>
     </form>
 
     <% if (results.length > 0) { %>
       <h2>Results:</h2>
-      <ul>
-        <% results.forEach(recipe => { %>
-          <li style="margin: 10px 0;">
-            <% if (recipe.thumbnail) { %>
-              <img src="<%= recipe.thumbnail %>" alt="thumb" style="height: 50px; vertical-align: middle;">
-            <% } %>
-            <strong><%= recipe.title %></strong>
-            — <a href="/recipes/edit/<%= recipe.id %>">Edit</a>
-          </li>
-        <% }) %>
-      </ul>
+      <table class="table-striped" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Thumbnail</th>
+            <th>Title</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% results.forEach(recipe => { %>
+            <tr>
+              <td>
+                <% if (recipe.thumbnail) { %>
+                  <img src="<%= recipe.thumbnail %>" alt="thumb" style="height: 50px;">
+                <% } %>
+              </td>
+              <td><strong><%= recipe.title %></strong></td>
+              <td><a href="/recipes/edit/<%= recipe.id %>" class="submit-button">Edit</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
     <% } else if (query) { %>
       <p>No results found for "<strong><%= query %></strong>"</p>
     <% } %>
   </div>
 </div>
+
 
 <%- include('footerMenu') %>
 </body>

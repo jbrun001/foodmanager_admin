@@ -490,6 +490,18 @@ h1 {
     color: #666;
 }
 
+table th,
+table td {
+  text-align: left;
+  vertical-align: middle;
+  padding: 12px 8px; /* increases row height */
+}
+
+table.table-striped tbody tr:nth-child(odd) {
+  background-color: #eeeeee;
+}
+
+
 @media screen and (max-width: 768px) {          /* for mobile screens smaller than 768px */
     .content {
         left: 0;                                /* remove left offset (menu width) */

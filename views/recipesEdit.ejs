@@ -11,7 +11,7 @@
 
 <div class="content">
   <div class="form-container">
-    <h1><%= isAddMode ? 'Add New Recipe' : 'Edit Recipe: ' + recipe.title %></h1>
+    <h1><%= isAddMode ? 'Add New Recipe' : 'Edit Recipe: ' + recipe.title %> <a class="submit-button" style="text-decoration: none;" href="/recipes/search">return to search</a></h1> 
 
     <form method="POST" action="<%= isAddMode ? '/recipes/add/form' : '/recipes/edit/' + recipe.id %>">
       <input type="hidden" name="_csrf" value="<%= crsfToken %>">
@@ -61,7 +61,7 @@
           </div>
         <% }) %>
       </div>
-      <button type="button" onclick="addIngredient()">+ Add Ingredient</button>
+      <button type="button" class="submit-button" onclick="addIngredient()">+ Add Ingredient</button>
 
       <h3>Method</h3>
       <div id="method-list">
@@ -74,7 +74,7 @@
           </div>
         <% }) %>
       </div>
-      <button type="button" onclick="addStep()">+ Add Step</button>
+      <button type="button" class="submit-button" onclick="addStep()">+ Add Step</button>
 
       <h3>Additional Ingredients</h3>
       <textarea name="additional_ingredients" style="width: 100%;"><%= recipe.additional_ingredients ? recipe.additional_ingredients.join(', ') : '' %></textarea><br>
