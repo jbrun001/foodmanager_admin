@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ingredients Created</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<%- include('headerMenu') %>
+
+<div class="content">
+  <div class="form-container">
+    <h1>New Ingredients Created</h1>
+
+    <% if (created.length > 0) { %>
+      <p class="info">The following ingredients have been successfully created:</p>
+      <ul>
+        <% created.forEach(name => { %>
+          <li><strong><%= name %></strong></li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p class="warning">No new ingredients were created. Either they already exist or were invalid.</p>
+    <% } %>
+
+    <br>
+    <a href="/ingredients/reviewNewIngredients" class="submit-button">← Back to Ingredient Review</a>
+  </div>
+</div>
+
+<%- include('footerMenu') %>
+</body>
+</html>
