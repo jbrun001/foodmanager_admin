@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Welcome to <%=appData.appName%></title>
+        <link rel="stylesheet"  type="text/css" href="/main.css" />
+    </head>
+
+<%- include('headerMenu') %>
+
+<div class="content">
+  <form method="POST" action="/ingredients/createReviewedIngredients">
+    <input type="hidden" name="_csrf" value="<%= crsfToken %>">
+    <table>
+      <thead>
+        <tr>
+          <th>Select</th><th>Name</th><th>Type</th><th>Unit</th><th>MOQ Amount</th><th>MOQ Units</th><th>Store</th><th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% ingredients.forEach((ing, i) => { %>
+          <tr>
+            <td><input type="checkbox" name="ingredients[<%= i %>][selected]" value="true"></td>
+            <td><input type="text" name="ingredients[<%= i %>][name]" value="<%= ing.name %>"></td>
+            <td><input type="text" name="ingredients[<%= i %>][type]" value="<%= ing.type %>"></td>
+            <td><input type="text" name="ingredients[<%= i %>][unit]" value="<%= ing.unit %>"></td>
+            <td><input type="number" step="1" name="ingredients[<%= i %>][amount]" value="<%= ing.moq.amount %>"></td>
+            <td><input type="text" name="ingredients[<%= i %>][units]" value="<%= ing.moq.units %>"></td>
+            <td><input type="text" name="ingredients[<%= i %>][storeName]" value="<%= ing.moq.storeName %>"></td>
+            <td><input type="number" step="0.01" name="ingredients[<%= i %>][price]" value="<%= ing.moq.price %>"></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <br>
+    <button type="submit" class="submit-button">Create Selected Ingredients</button>
+  </form>
+</div>
+
+<%- include('footerMenu') %>
+    </body>
+</html>

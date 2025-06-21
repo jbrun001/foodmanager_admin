@@ -118,8 +118,15 @@ return res.render('recipesAdd', {
   });
 });
 
-router.get('/add/form', redirectLogin, (req, res) => {
+router.get('/add/form', redirectLogin, async (req, res) => {
   const loggedInStatus = getLoggedInUser(req);
+
+  const ingredientsSnapshot = await db.collection('Ingredients').get();
+  const ingredientNames = ingredientsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    return { name: data.name, unit: data.unit || '' };
+  });
+
   res.render('recipesEdit', {
     loggedInStatus,
     crsfToken: req.csrfToken(),
@@ -140,13 +147,23 @@ router.get('/add/form', redirectLogin, (req, res) => {
       additional_ingredients: []
     },
     messages: [],
-    isAddMode: true
+    isAddMode: true,
+    ingredientNames
   });
 });
 
 
+
 router.post('/add/form', redirectLogin, async (req, res) => {
   const loggedInStatus = getLoggedInUser(req);
+
+  // Fetch ingredients to pass into the template
+  const ingredientsSnapshot = await db.collection('Ingredients').get();
+  const ingredientNames = ingredientsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    return { name: data.name, unit: data.unit || '' };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+
   try {
     const newRecipe = {
       title: req.body.title,
@@ -182,25 +199,28 @@ router.post('/add/form', redirectLogin, async (req, res) => {
         crsfToken: req.csrfToken(),
         recipe: newRecipe,
         isAddMode: true,
+        ingredientNames,
         messages: [{ field: 'duplicate', message: 'Recipe with this title already exists' }]
       });
     }
 
-    await db.collection('recipes').add(newRecipe);
+    const docRef = await db.collection('recipes').add(newRecipe);
+    newRecipe.id = docRef.id; // inject ID for future edits
 
     res.render('recipesEdit', {
       loggedInStatus,
       crsfToken: req.csrfToken(),
       recipe: newRecipe,
-      isAddMode: true,
+      isAddMode: false, // important — it's now treated as an existing recipe
+      ingredientNames,
       messages: [{ field: 'success', message: 'New recipe added successfully' }]
     });
+
   } catch (err) {
     console.error(err);
     res.status(500).send('Failed to add recipe');
   }
 });
-
 
 router.get('/fixThumbnails', redirectLogin, async (req, res) => {
   const loggedInStatus = getLoggedInUser(req);
@@ -255,8 +275,6 @@ router.post('/fixThumbnails/:recipeId', redirectLogin, async (req, res) => {
   }
 });
 
-// In routes/recipes.js
-
 router.get('/edit/:id', redirectLogin, async (req, res) => {
   const recipeId = req.params.id;
   const loggedInStatus = getLoggedInUser(req);
@@ -267,18 +285,27 @@ router.get('/edit/:id', redirectLogin, async (req, res) => {
 
     const recipe = doc.data();
     recipe.id = doc.id;
+
+    const ingredientsSnapshot = await db.collection('Ingredients').get();
+    const ingredientNames = ingredientsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return { name: data.name, unit: data.unit || '' };
+    }).sort((a, b) => a.name.localeCompare(b.name));
+
     res.render('recipesEdit', {
       loggedInStatus,
       crsfToken: req.csrfToken(),
       recipe,
       messages: [],
-      isAddMode: false  
+      isAddMode: false,
+      ingredientNames
     });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error retrieving recipe');
   }
 });
+
 
 router.post('/edit/:id', redirectLogin, async (req, res) => {
   const recipeId = req.params.id;
@@ -314,18 +341,26 @@ router.post('/edit/:id', redirectLogin, async (req, res) => {
 
     await db.collection('recipes').doc(recipeId).set(updatedRecipe, { merge: true });
 
+    const ingredientsSnapshot = await db.collection('Ingredients').get();
+    const ingredientNames = ingredientsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return { name: data.name, unit: data.unit || '' };
+    }).sort((a, b) => a.name.localeCompare(b.name));
+
     res.render('recipesEdit', {
       loggedInStatus,
       crsfToken: req.csrfToken(),
       recipe: updatedRecipe,
       messages: [{ field: 'success', message: 'Recipe updated successfully' }],
-      isAddMode: false  
+      isAddMode: false,
+      ingredientNames
     });
   } catch (err) {
     console.error(err);
     res.status(500).send('Failed to update recipe');
   }
 });
+
 
 router.get('/search', redirectLogin, (req, res) => {
   const loggedInStatus = getLoggedInUser(req);

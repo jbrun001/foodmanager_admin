@@ -54,14 +54,38 @@
         <% recipe.ingredients.forEach((ingredient, index) => { %>
           <div class="ingredient-row">
             <input type="hidden" name="ingredients[<%= index %>][ingredient_id]" value="<%= ingredient.ingredient_id %>">
-            <label>Name: <input type="text" name="ingredients[<%= index %>][ingredient_name]" value="<%= ingredient.ingredient_name %>"></label>
-            <label>Amount: <input type="number" step="any" name="ingredients[<%= index %>][amount]" value="<%= ingredient.amount %>"></label>
-            <label>Unit: <input type="text" name="ingredients[<%= index %>][unit]" value="<%= ingredient.unit %>"></label>
+
+            <label>
+              Name:
+              <input 
+                list="ingredient-options" 
+                name="ingredients[<%= index %>][ingredient_name]" 
+                value="<%= ingredient.ingredient_name %>" 
+                oninput="updateUnitHint(this, <%= index %>)">
+              <span class="unit-hint" id="unit-hint-<%= index %>" style="font-size: 0.9em; color: #888;"></span>
+            </label>
+
+            <label>Amount:
+              <input type="number" step="any" name="ingredients[<%= index %>][amount]" value="<%= ingredient.amount %>">
+            </label>
+
+            <label>Unit:
+              <input type="text" name="ingredients[<%= index %>][unit]" value="<%= ingredient.unit %>">
+            </label>
+
             <button type="button" onclick="this.parentNode.remove()">Remove</button>
           </div>
         <% }) %>
       </div>
+
+      <datalist id="ingredient-options">
+        <% ingredientNames.forEach(i => { %>
+          <option value="<%= i.name %>">
+        <% }) %>
+      </datalist>
+
       <button type="button" class="submit-button" onclick="addIngredient()">+ Add Ingredient</button>
+
 
       <h3>Method</h3>
       <div id="method-list">
@@ -93,6 +117,24 @@
 </div>
 
 <script>
+
+    const ingredientInfo = <%- JSON.stringify(ingredientNames) %>;
+
+  function updateUnitHint(input, index) {
+    const hintEl = document.getElementById(`unit-hint-${index}`);
+    const unitInput = document.querySelector(`[name="ingredients[${index}][unit]"]`);
+    const match = ingredientInfo.find(i => i.name.toLowerCase() === input.value.toLowerCase());
+
+    if (match) {
+      hintEl.textContent = match.unit ? `Suggested unit: ${match.unit}` : '';
+      if (unitInput && (!unitInput.value || unitInput.value.trim() === '')) {
+        unitInput.value = match.unit;
+      }
+    } else {
+      hintEl.textContent = '';
+    }
+  }
+
   function addIngredient() {
     const container = document.getElementById('ingredients-list');
     const index = container.children.length;
@@ -100,14 +142,18 @@
     div.className = 'ingredient-row';
     div.innerHTML = `
       <input type="hidden" name="ingredients[${index}][ingredient_id]" value="">
-      <label>Name: <input type="text" name="ingredients[${index}][ingredient_name]" value=""></label>
+      <label>
+        Name:
+        <input list="ingredient-options" name="ingredients[${index}][ingredient_name]" value="" oninput="updateUnitHint(this, ${index})">
+        <span class="unit-hint" id="unit-hint-${index}" style="font-size: 0.9em; color: #888;"></span>
+      </label>
       <label>Amount: <input type="number" step="any" name="ingredients[${index}][amount]" value=""></label>
       <label>Unit: <input type="text" name="ingredients[${index}][unit]" value=""></label>
       <button type="button" onclick="this.parentNode.remove()">Remove</button>
     `;
     container.appendChild(div);
   }
-
+  
   function addStep() {
     const container = document.getElementById('method-list');
     const index = container.children.length;

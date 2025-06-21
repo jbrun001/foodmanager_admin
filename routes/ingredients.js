@@ -411,4 +411,84 @@ router.post('/deleteIngredient', redirectLogin, async (req, res) => {
 });
 
 
+router.get('/reviewNewIngredients', redirectLogin, async (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  const recipesSnapshot = await db.collection('recipes').get();
+  const ingredientsSnapshot = await db.collection('Ingredients').get();
+
+  const existingNames = new Set();
+  ingredientsSnapshot.forEach(doc => {
+    existingNames.add(doc.data().name.toLowerCase().trim());
+  });
+
+  const missingIngredients = new Map();
+
+  recipesSnapshot.forEach(doc => {
+    const recipe = doc.data();
+    (recipe.ingredients || []).forEach(ing => {
+      const name = (ing.ingredient_name || '').trim();
+      if (name && !existingNames.has(name.toLowerCase()) && !missingIngredients.has(name.toLowerCase())) {
+        missingIngredients.set(name.toLowerCase(), {
+          name,
+          unit: ing.unit || 'g',
+          type: guessType(name),
+          moq: {
+            amount: 1,
+            units: ing.unit || 'g',
+            storeName: 'Tesco',
+            price: 0
+          }
+        });
+      }
+    });
+  });
+
+  res.render('ingredientsReviewCreate.ejs', {
+    loggedInStatus,
+    crsfToken: req.csrfToken(),
+    ingredients: Array.from(missingIngredients.values())
+  });
+});
+
+router.post('/createReviewedIngredients', redirectLogin, async (req, res) => {
+  const loggedInStatus = getLoggedInUser(req);
+  const { ingredients = [] } = req.body;
+
+  const now = new Date().toISOString();
+  const existingSnapshot = await db.collection('Ingredients').get();
+  const existing = new Set(existingSnapshot.docs.map(doc => doc.id.toLowerCase()));
+
+  let created = [];
+
+  for (const raw of ingredients) {
+    const name = raw.name.trim();
+    if (!name || existing.has(name.toLowerCase())) continue;
+
+    await db.collection('Ingredients').doc(name).set({
+      name,
+      unit: raw.unit,
+      type: raw.type,
+      Moqs: [{
+        amount: parseFloat(raw.amount),
+        units: raw.units,
+        storeName: raw.storeName,
+        price: parseFloat(raw.price) || 0,
+        URL: '',
+        lastCollected: now
+      }]
+    });
+
+    created.push(name);
+  }
+
+  res.render('ingredientsCreated.ejs', {
+    loggedInStatus,
+    created,
+    crsfToken: req.csrfToken()
+  });
+});
+
+
+
+
 module.exports = router;
