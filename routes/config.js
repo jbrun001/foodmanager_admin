@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../firebaseAdmin');
 const { redirectLogin } = require('../helpers/redirectLogin');
 const { getLoggedInUser } = require('../helpers/getLoggedInUser');
+const admin = require('firebase-admin');
 
 // GET config edit form
 router.get('/edit', redirectLogin, async (req, res) => {
@@ -44,6 +45,25 @@ router.post('/edit', redirectLogin, async (req, res) => {
         taglines: (group.taglines || []).filter(t => t.trim() !== '')
         }))
     : [];
+
+
+    // Parse unlock codes
+    const unlockCodesInput = req.body.unlockCodes || [];
+    const unlockCodes = Object.values(unlockCodesInput)
+      .map(entry => {
+        const code = entry.code?.trim();
+        const expiryDateRaw = entry.expiryDate ? new Date(entry.expiryDate) : null;
+
+        return {
+          code,
+          expiryDate: expiryDateRaw instanceof Date && !isNaN(expiryDateRaw)
+            ? admin.firestore.Timestamp.fromDate(expiryDateRaw)
+            : null
+        };
+      })
+      .filter(entry => entry.code && entry.expiryDate);
+
+    configUpdate.unlockCodes = unlockCodes;
 
     await db.collection('Config').doc('flutterapp').set(configUpdate, { merge: true });
 

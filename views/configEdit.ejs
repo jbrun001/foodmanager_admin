@@ -28,6 +28,23 @@
       <label>Perishable Types (comma-separated)</label>
       <input type="text" name="perishable_types" value="<%= config.perishable_types?.join(', ') %>" style="width: 100%;">
 
+      <h3>Unlock Codes</h3>
+      <div id="unlock-codes">
+        <% (config.unlockCodes || []).forEach((codeEntry, index) => { %>
+          <div class="unlock-code" data-index="<%= index %>">
+            <label>Code</label>
+            <input type="text" name="unlockCodes[<%= index %>][code]" value="<%= codeEntry.code %>" size="10">
+
+            <label>Expiry Date</label>
+            <input type="datetime-local" name="unlockCodes[<%= index %>][expiryDate]" value="<%= new Date(codeEntry.expiryDate._seconds * 1000).toISOString().slice(0,16) %>" size="15">
+            
+            <button type="button" class="submit-button" onclick="removeUnlockCode(this)">Remove</button>
+          </div>
+        <% }) %>
+      </div>
+      <button type="button" class="submit-button" onclick="addUnlockCode()">+ Add Unlock Code</button>
+            <hr>
+
       <h3>Feature Groups</h3>
       <div id="feature-groups">
         <% (config.feature_groups || []).forEach((group, index) => { %>
@@ -131,6 +148,36 @@ function addTagline(button) {
     const group = button.closest('.feature-group');
     group.remove();
   }
+
+  function addUnlockCode() {
+  const container = document.getElementById('unlock-codes');
+  const lastIndex = [...container.querySelectorAll('.unlock-code')].reduce((max, div) => {
+    const i = parseInt(div.dataset.index, 10);
+    return isNaN(i) ? max : Math.max(max, i);
+  }, -1);
+  const newIndex = lastIndex + 1;
+
+  const div = document.createElement('div');
+  div.className = 'unlock-code';
+  div.dataset.index = newIndex;
+
+  div.innerHTML = `
+    <label>Code</label>
+    <input type="text" name="unlockCodes[${newIndex}][code]" size="10">
+
+    <label>Expiry Date</label>
+    <input type="datetime-local" name="unlockCodes[${newIndex}][expiryDate]" size="15">
+
+    <button type="button" class="submit-button" onclick="removeUnlockCode(this)">Remove</button>
+   
+  `;
+
+  container.appendChild(div);
+}
+
+function removeUnlockCode(button) {
+  button.closest('.unlock-code').remove();
+}
 </script>
 
 <%- include('footerMenu') %>

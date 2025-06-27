@@ -55,7 +55,7 @@ app.use(session({
           httpOnly: true,                     // cookie can't be set by javascript
  //         domain: cookieDomain,             // restricts cookie sending to just this domain - had to remove this as was not working on uni server, becsause of the way that localhost is published via apache?
  //         path: cookiePath,                 // restricts cookie sending to just the part of the path that has the routes - had to remove this as was not working on uni server, because of localhost published via apache?
-          expires: 3600000                    // 1 hour before session times out
+            expires: 43200000  // 12 hours     
     }
 }))
 
